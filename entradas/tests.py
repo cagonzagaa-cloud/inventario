@@ -82,6 +82,8 @@ class DetalleEntradaIvaTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        # Refresh producto from DB to assert updated stock
+        self.producto.refresh_from_db()
         self.assertEqual(self.producto.stock, 4)
         movimiento = MovimientoInventario.objects.filter(producto=self.producto, tipo="ENTRADA").first()
         self.assertIsNotNone(movimiento)

@@ -377,13 +377,15 @@ def confirmar_entrada(request, pk):
             ]
         )
 
+        movimiento_usuario = request.user if hasattr(request, 'user') and request.user.is_authenticated else entrada.usuario
+
         registrar_movimiento(
             producto=producto,
             tipo="ENTRADA",
             cantidad=detalle.cantidad,
             stock_anterior=stock_anterior,
             stock_nuevo=producto.stock,
-            usuario=request.user,
+            usuario=movimiento_usuario,
             referencia=entrada.codigo,
         )
 
