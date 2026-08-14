@@ -237,64 +237,41 @@ SOCIALACCOUNT_PROVIDERS = {
 # BASE DE DATOS
 # ============================================================
 
-# Use SQLite for local development when DEBUG is True; keep PostgreSQL in production.
-if DEBUG:
-
+# If a DATABASE_HOST is provided (e.g. Supabase), prefer Postgres connection
+if os.getenv("DATABASE_HOST"):
     DATABASES = {
-
         "default": {
-
-            "ENGINE": "django.db.backends.sqlite3",
-
-            "NAME": BASE_DIR / "db.sqlite3",
-
-        }
-
-    }
-
-else:
-
-    DATABASES = {
-
-        "default": {
-
             "ENGINE": "django.db.backends.postgresql",
-
-            "NAME": os.getenv(
-                "DATABASE_NAME",
-                "postgres"
-            ),
-
-            "USER": os.getenv(
-                "DATABASE_USER",
-                "postgres"
-            ),
-
-            "PASSWORD": os.getenv(
-                "DATABASE_PASSWORD"
-            ),
-
-            "HOST": os.getenv(
-                "DATABASE_HOST",
-                "db.chffbwcfppmyheajddrs.supabase.co"
-            ),
-
-            "PORT": os.getenv(
-                "DATABASE_PORT",
-                "5432"
-            ),
-
+            "NAME": os.getenv("DATABASE_NAME", "postgres"),
+            "USER": os.getenv("DATABASE_USER", "postgres"),
+            "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST"),
+            "PORT": os.getenv("DATABASE_PORT", "5432"),
             "OPTIONS": {
-
-                "sslmode": os.getenv(
-                    "DATABASE_SSLMODE",
-                    "require"
-                ),
-
+                "sslmode": os.getenv("DATABASE_SSLMODE", "require"),
             },
-
         }
-
+    }
+elif DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DATABASE_NAME", "postgres"),
+            "USER": os.getenv("DATABASE_USER", "postgres"),
+            "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST", "db.chffbwcfppmyheajddrs.supabase.co"),
+            "PORT": os.getenv("DATABASE_PORT", "5432"),
+            "OPTIONS": {
+                "sslmode": os.getenv("DATABASE_SSLMODE", "require"),
+            },
+        }
     }
 
 
