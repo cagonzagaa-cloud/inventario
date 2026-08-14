@@ -1,0 +1,124 @@
+<div class="modal fade"
+    id="modalEliminarDetalle"
+    tabindex="-1"
+    aria-labelledby="modalEliminarDetalleLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form
+                method="POST"
+                id="formEliminarDetalle">
+
+                {% csrf_token %}
+
+                <div class="modal-header bg-danger text-white">
+
+                    <h5
+                        class="modal-title"
+                        id="modalEliminarDetalleLabel">
+
+                        <i class="bi bi-trash-fill"></i>
+
+                        Eliminar Producto
+
+                    </h5>
+
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+
+                    </button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <p>
+
+                        ¿Está seguro de eliminar el siguiente producto?
+
+                    </p>
+
+
+                    <div class="alert alert-warning">
+
+                        <strong id="productoEliminarDetalle">
+
+                            Producto
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="alert alert-danger">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        Esta acción:
+
+                        <ul class="mb-0 mt-2">
+
+                            <li>
+                                Eliminará el producto de la salida.
+                            </li>
+
+                            <li>
+                                Actualizará el total automáticamente.
+                            </li>
+
+                            <li>
+                                Devolverá las unidades al inventario.
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="modal-footer">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger">
+
+                        <i class="bi bi-trash"></i>
+
+                        Eliminar
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

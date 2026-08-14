@@ -1,0 +1,430 @@
+<div class="modal fade"
+    id="proveedorModal"
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+
+        <div class="modal-content proveedor-modal border-0 shadow-lg rounded-4">
+
+            <!-- Encabezado -->
+
+            <div class="modal-header bg-primary text-white">
+
+                <h4 class="modal-title" id="tituloProveedor">
+
+                    Nuevo Proveedor
+
+                </h4>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form
+                id="formProveedor"
+                method="POST"
+                action="{% url 'crear_proveedor' %}">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <!-- ===================================== -->
+                    <!-- INFORMACIÓN GENERAL -->
+                    <!-- ===================================== -->
+
+                    <div class="card border-0 shadow-sm mb-4">
+
+                        <div class="card-header bg-light">
+
+                            <strong>
+
+                                <i class="bi bi-building"></i>
+
+                                Información General
+
+                            </strong>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-3 mb-3">
+
+                                    <label class="form-label">
+
+                                        Código
+
+                                    </label>
+
+                                    {{ form.codigo }}
+
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+
+                                    <label class="form-label">
+
+                                        Tipo Identificación
+
+                                    </label>
+
+                                    {{ form.tipo_identificacion }}
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+
+                                        Identificación
+
+                                    </label>
+
+                                    {{ form.identificacion }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Razón Social
+
+                                </label>
+
+                                {{ form.razon_social }}
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Nombre Comercial
+
+                                </label>
+
+                                {{ form.nombre_comercial }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===================================== -->
+                    <!-- CONTACTO -->
+                    <!-- ===================================== -->
+
+                    <div class="card border-0 shadow-sm mb-4">
+
+                        <div class="card-header bg-light">
+
+                            <strong>
+
+                                <i class="bi bi-person-lines-fill"></i>
+
+                                Información de Contacto
+
+                            </strong>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label>
+
+                                        Persona de Contacto
+
+                                    </label>
+
+                                    {{ form.contacto }}
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label>
+
+                                        Cargo
+
+                                    </label>
+
+                                    {{ form.cargo }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label>
+
+                                        Teléfono
+
+                                    </label>
+
+                                    {{ form.telefono }}
+
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label>
+
+                                        Celular
+
+                                    </label>
+
+                                    {{ form.celular }}
+
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label>
+
+                                        Correo
+
+                                    </label>
+
+                                    {{ form.correo }}
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <label>
+
+                                    Sitio Web
+
+                                </label>
+
+                                {{ form.sitio_web }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===================================== -->
+                    <!-- UBICACIÓN -->
+                    <!-- ===================================== -->
+
+                    <div class="card border-0 shadow-sm mb-4">
+
+                        <div class="card-header bg-light">
+
+                            <strong>
+
+                                <i class="bi bi-geo-alt"></i>
+
+                                Ubicación
+
+                            </strong>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="mb-3">
+
+                                <label>
+
+                                    Dirección
+
+                                </label>
+
+                                {{ form.direccion }}
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-3">
+
+                                    <label>
+
+                                        Provincia
+
+                                    </label>
+
+                                    {{ form.provincia }}
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <label>
+
+                                        Cantón
+
+                                    </label>
+
+                                    {{ form.canton }}
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <label>
+
+                                        Ciudad
+
+                                    </label>
+
+                                    {{ form.ciudad }}
+
+                                </div>
+
+                                <div class="col-md-3">
+
+                                    <label>
+
+                                        Código Postal
+
+                                    </label>
+
+                                    {{ form.codigo_postal }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===================================== -->
+                    <!-- INFORMACIÓN COMERCIAL -->
+                    <!-- ===================================== -->
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-header bg-light">
+
+                            <strong>
+
+                                <i class="bi bi-cash-stack"></i>
+
+                                Información Comercial
+
+                            </strong>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label>
+
+                                        Condición de Pago
+
+                                    </label>
+
+                                    {{ form.condicion_pago }}
+
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label>
+
+                                        Cupo de Crédito
+
+                                    </label>
+
+                                    {{ form.cupo_credito }}
+
+                                </div>
+
+                                <div class="col-md-4 d-flex align-items-center">
+
+                                    <div class="form-check mt-4">
+
+                                        {{ form.estado }}
+
+                                        <label class="form-check-label">
+
+                                            Proveedor Activo
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <label>
+
+                                    Observaciones
+
+                                </label>
+
+                                {{ form.observaciones }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        class="btn btn-primary">
+
+                        <i class="bi bi-save"></i>
+
+                        Guardar Proveedor
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

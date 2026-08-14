@@ -1,0 +1,72 @@
+<nav class="topbar">
+
+    <div class="left-navbar">
+
+        <button id="toggleSidebar" class="btn-menu">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <div>
+
+            <h4>Dashboard</h4>
+
+            <small>Sistema Web de Inventario</small>
+
+        </div>
+
+    </div>
+
+    <div class="right-navbar">
+
+        <div class="search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="text"
+                placeholder="Buscar...">
+
+        </div>
+
+        <button class="notification">
+
+            <i class="bi bi-bell"></i>
+
+        </button>
+
+        <div class="profile">
+
+            <img
+                src="https://ui-avatars.com/api/?name=Administrador&background=2563eb&color=fff"
+                alt="Usuario">
+
+            <div>
+
+                <strong>Administrador</strong>
+
+                
+
+            </div>
+
+        </div>
+
+        <form id="logoutForm" method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="dropdown-item border-0 bg-transparent text-start">
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                Cerrar sesión
+
+            </button>
+
+        </form>
+
+    </div>
+
+</nav>

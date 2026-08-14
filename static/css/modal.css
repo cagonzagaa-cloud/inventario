@@ -1,0 +1,157 @@
+/* ==========================================
+MODALES EMPRESARIALES
+========================================== */
+
+.modal-content{
+    border-radius:18px;
+    overflow:hidden;
+    border:none;
+}
+
+/* Cabecera */
+
+.modal-header{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    border-bottom:none;
+    padding:18px 25px;
+}
+
+.modal-header .modal-title{
+    font-size:1.25rem;
+    font-weight:600;
+}
+
+.modal-header .btn-close{
+    filter:invert(1);
+}
+
+/* Cuerpo */
+
+.modal-body{
+    background:#f8fafc;
+    padding:25px;
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+/* Tarjetas */
+
+.modal-body .card{
+    border:none;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.modal-body .card-header{
+    background:#eef4ff;
+    color:#2563eb;
+    font-weight:600;
+    border-bottom:1px solid #dbeafe;
+    padding:12px 18px;
+}
+
+.modal-body .card-body{
+    background:#fff;
+}
+
+/* Labels */
+
+.modal-body label{
+    font-weight:600;
+    color:#374151;
+    margin-bottom:6px;
+}
+
+/* Inputs */
+
+.modal-body .form-control,
+.modal-body .form-select{
+
+    border-radius:10px;
+    border:1px solid #d1d5db;
+
+    padding:10px 14px;
+
+    transition:.25s;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+}
+
+/* Checkbox */
+
+.form-check-input{
+
+    width:20px;
+
+    height:20px;
+}
+
+.form-check-label{
+
+    margin-left:8px;
+
+    font-weight:600;
+}
+
+/* Footer */
+
+.modal-footer{
+
+    border-top:none;
+
+    background:#fff;
+
+    padding:18px 25px;
+}
+
+.modal-footer .btn{
+
+    border-radius:10px;
+
+    min-width:140px;
+
+    font-weight:600;
+}
+
+/* Scroll */
+
+.modal-body::-webkit-scrollbar{
+
+    width:8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.modal-dialog{
+
+    margin:10px;
+}
+
+.modal-body{
+
+    max-height:65vh;
+}
+
+}

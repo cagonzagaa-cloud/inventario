@@ -1,0 +1,84 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+{{ titulo }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4>{{ titulo }}</h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Nombre
+
+                    </label>
+
+                    {{ form.nombre }}
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Descripción
+
+                    </label>
+
+                    {{ form.descripcion }}
+
+                </div>
+
+                <div class="form-check mb-4">
+
+                    {{ form.estado }}
+
+                    <label class="form-check-label">
+
+                        Activa
+
+                    </label>
+
+                </div>
+
+                <button class="btn btn-success">
+
+                    <i class="bi bi-save"></i>
+
+                    Guardar
+
+                </button>
+
+                <a href="{% url 'lista_categorias' %}"
+                class="btn btn-secondary">
+
+                    Cancelar
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

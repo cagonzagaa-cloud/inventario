@@ -1,0 +1,289 @@
+<div class="modal fade"
+    id="modalEditarSalida"
+    tabindex="-1"
+    aria-hidden="true">
+
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+
+        <div class="modal-content">
+
+
+            <form method="POST"
+                id="formEditarSalida">
+
+
+                {% csrf_token %}
+
+
+                <div class="modal-header bg-warning">
+
+
+                    <h5 class="modal-title">
+
+                        <i class="bi bi-pencil-square"></i>
+
+                        Editar Salida
+
+                    </h5>
+
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    <div class="row">
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label">
+
+                                Fecha
+
+                            </label>
+
+
+                            <input type="date"
+                                class="form-control"
+                                id="editar_fecha"
+                                name="fecha">
+
+                        </div>
+
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label">
+
+                                Cliente
+
+                            </label>
+
+
+                            <select
+                                class="form-select"
+                                id="editar_cliente"
+                                name="cliente">
+
+
+                                {% for cliente in form.cliente.field.queryset %}
+
+
+                                    <option value="{{ cliente.id }}">
+
+                                        {{ cliente.nombre_completo }}
+
+                                    </option>
+
+
+                                {% endfor %}
+
+
+                            </select>
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label">
+
+                                Número documento
+
+                            </label>
+
+
+                            <input type="text"
+                                class="form-control"
+                                id="editar_numero_documento"
+                                name="numero_documento">
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label">
+
+                                Tipo
+
+                            </label>
+
+
+                            <select
+                                class="form-select"
+                                id="editar_tipo"
+                                name="tipo">
+
+
+                                <option value="VENTA">
+                                    Venta
+                                </option>
+
+
+                                <option value="DEVOLUCION">
+                                    Devolución
+                                </option>
+
+
+                                <option value="AJUSTE">
+                                    Ajuste de Inventario
+                                </option>
+
+
+                                <option value="CONSUMO">
+                                    Consumo Interno
+                                </option>
+
+
+                                <option value="OTRO">
+                                    Otro
+                                </option>
+
+
+                            </select>
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label">
+
+                                Estado
+
+                            </label>
+
+
+                            <select
+                                class="form-select"
+                                id="editar_estado"
+                                name="estado">
+
+
+                                <option value="BORRADOR">
+                                    Borrador
+                                </option>
+
+
+                                <option value="CONFIRMADA">
+                                    Confirmada
+                                </option>
+
+
+                                <option value="ANULADA">
+                                    Anulada
+                                </option>
+
+
+                            </select>
+
+
+                        </div>
+
+
+
+
+
+                        <div class="col-md-12 mb-3">
+
+
+                            <label class="form-label">
+
+                                Observaciones
+
+                            </label>
+
+
+                            <textarea
+                                class="form-control"
+                                id="editar_observaciones"
+                                name="observaciones"
+                                rows="3"></textarea>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+                <div class="modal-footer">
+
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+
+                        Cancelar
+
+
+                    </button>
+
+
+
+
+                    <button type="submit"
+                            class="btn btn-warning">
+
+
+                        <i class="bi bi-save"></i>
+
+                        Actualizar
+
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

@@ -1,0 +1,276 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Salidas
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h3 class="fw-bold">
+
+        <i class="bi bi-box-arrow-up"></i>
+
+        Gestión de Salidas
+
+    </h3>
+
+
+    <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#modalSalida">
+
+
+        <i class="bi bi-plus-circle"></i>
+
+        Nueva Salida
+
+
+    </button>
+
+
+</div>
+
+
+
+<div class="card shadow-sm">
+
+
+    <div class="card-body">
+
+
+        <div class="table-responsive">
+
+
+            <table
+                id="tablaSalidas"
+                class="table table-hover align-middle">
+
+
+                <thead class="table-light">
+
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Código</th>
+
+                        <th>Cliente</th>
+
+                        <th>Fecha</th>
+
+                        <th>Tipo</th>
+
+                        <th>Total</th>
+
+                        <th>Estado</th>
+
+                        <th width="180">
+                            Acciones
+                        </th>
+
+
+                    </tr>
+
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    {% for salida in salidas %}
+
+
+                    <tr>
+
+
+                        <td>
+                            {{ salida.id }}
+                        </td>
+
+
+
+                        <td>
+                            {{ salida.codigo }}
+                        </td>
+
+
+
+                        <td>
+                            {{ salida.cliente.nombre_completo }}
+                        </td>
+
+
+
+                        <td>
+                            {{ salida.fecha }}
+                        </td>
+
+
+
+                        <td>
+                            {{ salida.get_tipo_display }}
+                        </td>
+
+
+
+                        <td>
+                            {% load moneda %}
+                            {{ salida.total|currency }}
+                        </td>
+
+
+
+                        <td>
+
+
+                            {% if salida.estado == "CONFIRMADA" %}
+
+                                <span class="badge bg-success">
+
+                                    Confirmada
+
+                                </span>
+
+
+                            {% elif salida.estado == "ANULADA" %}
+
+                                <span class="badge bg-danger">
+
+                                    Anulada
+
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Borrador
+
+                                </span>
+
+
+                            {% endif %}
+
+                    <td>
+
+                        <!-- VER DETALLE -->
+                        <a href="{% url 'detalle_salida' salida.id %}"
+                        class="btn btn-info btn-sm text-white"
+                        title="Ver detalle">
+
+                            <i class="bi bi-eye"></i>
+
+                        </a>
+
+
+    <!-- EDITAR -->
+    <button
+        class="btn btn-warning btn-sm btnEditarSalida"
+
+        data-id="{{ salida.id }}"
+
+        data-fecha="{{ salida.fecha|date:'Y-m-d' }}"
+
+        data-cliente="{{ salida.cliente.id }}"
+
+        data-documento="{{ salida.numero_documento|default:'' }}"
+
+        data-tipo="{{ salida.tipo }}"
+
+        data-estado="{{ salida.estado }}"
+
+        data-observaciones="{{ salida.observaciones|default:'' }}"
+
+        data-bs-toggle="modal"
+
+        data-bs-target="#modalEditarSalida"
+
+        title="Editar">
+
+
+        <i class="bi bi-pencil-square"></i>
+
+
+    </button>
+
+
+
+    <!-- ELIMINAR -->
+    <button
+        class="btn btn-danger btn-sm btnEliminarSalida"
+
+        data-id="{{ salida.id }}"
+
+        data-codigo="{{ salida.codigo }}"
+
+        data-bs-toggle="modal"
+
+        data-bs-target="#modalEliminarSalida"
+
+        title="Eliminar">
+
+
+        <i class="bi bi-trash"></i>
+
+
+    </button>
+
+
+</td>
+
+
+                    </tr>
+
+
+                    {% empty %}
+
+
+                    <tr>
+
+
+                        <td colspan="8"
+                            class="text-center">
+
+
+                            No existen salidas registradas.
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+{% include "salidas/modal_salida.html" %}
+
+{% include "salidas/modal_editar_salida.html" %}
+
+{% include "salidas/modal_eliminar_salida.html" %}
+
+{% endblock %}

@@ -1,0 +1,33 @@
+.producto-modal{
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+}
+
+.producto-modal .modal-body{
+
+    max-height:65vh;
+
+    overflow-y:auto;
+
+    padding:25px;
+
+}
+
+.producto-modal .modal-header{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.producto-modal .modal-footer{
+
+    background:white;
+
+    border-top:1px solid #e5e7eb;
+
+}

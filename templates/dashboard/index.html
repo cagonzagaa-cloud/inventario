@@ -1,0 +1,199 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Encabezado -->
+    <div class="mb-4">
+        <h5 class="mb-1">Últimos movimientos</h5>
+        <h2 class="fw-bold mb-2">Dashboard</h2>
+        <p class="text-secondary mb-0">
+            Bienvenido al Sistema Web de Gestión de Inventario
+        </p>
+    </div>
+
+    <!-- Tarjetas -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'lista_productos' %}" class="text-decoration-none">
+                <div class="dashboard-card bg-primary text-white">
+                    <div>
+                        <small>Productos</small>
+                        <h2>{{ productos }}</h2>
+                    </div>
+                    <i class="bi bi-box"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'lista_categorias' %}" class="text-decoration-none">
+                <div class="dashboard-card bg-success text-white">
+                    <div>
+                        <small>Categorías</small>
+                        <h2>{{ categorias }}</h2>
+                    </div>
+                    <i class="bi bi-tags"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'lista_proveedores' %}" class="text-decoration-none">
+                <div class="dashboard-card bg-warning text-white">
+                    <div>
+                        <small>Proveedores</small>
+                        <h2>{{ proveedores }}</h2>
+                    </div>
+                    <i class="bi bi-truck"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'lista_productos' %}" class="text-decoration-none">
+                <div class="dashboard-card bg-danger text-white">
+                    <div>
+                        <small>Stock Bajo</small>
+                        <h2>{{ stock_bajo }}</h2>
+                    </div>
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="panel mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Alertas de stock bajo</h5>
+            <span class="badge bg-danger rounded-pill">{{ stock_bajo }} productos</span>
+        </div>
+
+        {% if productos_bajo_stock %}
+            <div class="list-group list-group-flush">
+                {% for producto in productos_bajo_stock %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ producto.nombre }}</strong>
+                            <div class="text-muted small">{{ producto.codigo }}</div>
+                        </div>
+                        <span class="badge bg-warning text-dark">Stock: {{ producto.stock }} / mínimo {{ producto.stock_minimo }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">No hay productos con stock bajo.</p>
+        {% endif %}
+    </div>
+
+    <!-- Gráficos -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="panel panel--chart">
+
+                <h5>Entradas y Salidas</h5>
+
+                <canvas id="graficoInventario"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="panel panel--chart">
+
+                <h5>Distribución</h5>
+
+                <canvas id="graficoCircular"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Tabla -->
+
+    <div class="panel mt-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <h5>Últimos movimientos</h5>
+
+            <a href="{% url 'kardex' %}" class="btn btn-outline-primary btn-sm">
+                Ver todos
+            </a>
+
+        </div>
+
+        <table class="table table-hover mt-3">
+
+            <thead>
+
+                <tr>
+
+                    <th>Producto</th>
+
+                    <th>Movimiento</th>
+
+                    <th>Cantidad</th>
+
+                    <th>Fecha</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+
+                {% for movimiento in ultimos_movimientos %}
+
+                    <tr {% with detalle=movimiento.get_detail_url %}{% if detalle %}data-href="{{ detalle }}"{% else %}data-href="{% url 'kardex' %}?producto={{ movimiento.producto.pk }}"{% endif %}{% endwith %}>
+
+                        <td>{{ movimiento.producto.nombre }}</td>
+
+                        <td>
+                            <span class="badge {% if movimiento.tipo == 'ENTRADA' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                {{ movimiento.tipo }}
+                            </span>
+                        </td>
+
+                        <td>{{ movimiento.cantidad }}</td>
+
+                        <td>{{ movimiento.fecha|date:"d/m/Y" }}</td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No hay movimientos recientes.</td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{{ dashboard_data|json_script:"dashboard-data" }}
+{{ distribution_data|json_script:"distribution-data" }}
+
+{% endblock %}

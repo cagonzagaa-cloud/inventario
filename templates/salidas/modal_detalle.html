@@ -1,0 +1,192 @@
+<div class="modal fade"
+    id="modalDetalleSalida"
+    tabindex="-1"
+    aria-hidden="true">
+
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+
+        <div class="modal-content">
+
+
+            <form method="POST"
+                action="{% url 'agregar_detalle_salida' salida.id %}">
+
+
+                {% csrf_token %}
+
+
+                <div class="modal-header bg-primary text-white">
+
+
+                    <h5 class="modal-title">
+
+                        <i class="bi bi-cart-plus"></i>
+
+                        Agregar Producto a la Salida
+
+                    </h5>
+
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-12 mb-3">
+
+
+                            <label class="form-label fw-bold">
+
+                                Producto
+
+                            </label>
+
+
+
+                            <select
+                                class="form-select"
+                                id="id_producto"
+                                name="producto"
+                                required>
+
+
+                                <option value="">
+
+                                    Seleccione producto
+
+                                </option>
+
+
+                                {% for producto in productos %}
+
+
+                                <option value="{{ producto.id }}">
+
+                                    {{ producto.codigo }} -
+                                    {{ producto.nombre }}
+
+                                </option>
+
+
+                                {% endfor %}
+
+
+                            </select>
+
+
+                        </div>
+
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label fw-bold">
+
+                                Cantidad
+
+                            </label>
+
+
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="id_cantidad"
+                                name="cantidad"
+                                min="1"
+                                value="1"
+                                required>
+
+
+                        </div>
+
+
+
+
+                        <div class="col-md-6 mb-3">
+
+
+                            <label class="form-label fw-bold">
+
+                                Precio Unitario
+
+                            </label>
+
+
+
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="id_precio"
+                                name="precio"
+                                step="0.01"
+                                readonly>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+
+                        <i class="bi bi-plus-circle"></i>
+
+                        Agregar Producto
+
+
+                    </button>
+
+
+                </div>
+
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

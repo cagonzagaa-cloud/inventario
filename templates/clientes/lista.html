@@ -1,0 +1,157 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h3 class="fw-bold">
+        <i class="bi bi-people-fill"></i>
+        Gestión de Clientes
+    </h3>
+
+    <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#modalCliente">
+
+        <i class="bi bi-plus-circle"></i>
+        Nuevo Cliente
+
+    </button>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table
+                id="tablaClientes"
+                class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Identificación</th>
+                        <th>Nombre Completo</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                        <th width="170">Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for cliente in clientes %}
+
+                    <tr>
+
+                        <td>{{ cliente.id }}</td>
+
+                        <td>{{ cliente.identificacion }}</td>
+
+                        <td>{{ cliente.nombre_completo }}</td>
+
+                        <td>{{ cliente.telefono|default:"-" }}</td>
+
+                        <td>{{ cliente.correo|default:"-" }}</td>
+
+                        <td>
+
+                            {% if cliente.estado %}
+
+                                <span class="badge bg-success">
+                                    Activo
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    Inactivo
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="btn btn-warning btn-sm btnEditarCliente"
+
+                                data-id="{{ cliente.id }}"
+                                data-tipo="{{ cliente.tipo_identificacion }}"
+                                data-identificacion="{{ cliente.identificacion }}"
+                                data-nombres="{{ cliente.nombres }}"
+                                data-apellidos="{{ cliente.apellidos }}"
+                                data-telefono="{{ cliente.telefono }}"
+                                data-correo="{{ cliente.correo }}"
+                                data-direccion="{{ cliente.direccion }}"
+                                data-estado="{{ cliente.estado }}"
+
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditarCliente">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-danger btn-sm btnEliminarCliente"
+
+                                data-id="{{ cliente.id }}"
+                                data-nombre="{{ cliente.nombre_completo }}"
+
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEliminarCliente">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="7" class="text-center">
+
+                            No existen clientes registrados.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% include "clientes/modal_cliente.html" %}
+{% include "clientes/modal_editar_cliente.html" %}
+{% include "clientes/modal_eliminar_cliente.html" %}
+
+{% endblock %}

@@ -1,0 +1,47 @@
+.card{
+
+    border-radius:18px;
+
+}
+
+.table thead{
+
+    background:#F8FAFC;
+
+}
+
+.table td{
+
+    vertical-align:middle;
+
+}
+
+.btn{
+
+    border-radius:10px;
+
+}
+
+.badge{
+
+    font-size:.85rem;
+
+    padding:8px 12px;
+
+}
+.card{
+
+    border:none;
+    border-radius:18px;
+    overflow:hidden;
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 30px rgba(253, 251, 251, 0.08);
+
+}

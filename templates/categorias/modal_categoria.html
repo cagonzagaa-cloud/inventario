@@ -1,0 +1,122 @@
+<div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow">
+
+            <!-- Encabezado -->
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title" id="tituloModal">
+                    Nueva Categoría
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar">
+                </button>
+
+            </div>
+
+            <!-- Formulario -->
+            <form id="formCategoria"
+                  method="POST"
+                  action="{% url 'crear_categoria' %}">
+
+                {% csrf_token %}
+
+                <input type="hidden"
+                       id="categoria_id"
+                       name="categoria_id">
+
+                <div class="modal-body">
+
+                    <!-- Nombre -->
+                    <div class="mb-3">
+
+                        <label for="nombre" class="form-label fw-semibold">
+                            Nombre <span class="text-danger">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="nombre"
+                            name="nombre"
+                            placeholder="Ingrese el nombre de la categoría">
+
+                        <div class="invalid-feedback" id="errorNombre"></div>
+
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-3">
+
+                        <label for="descripcion" class="form-label fw-semibold">
+                            Descripción <span class="text-danger">*</span>
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            id="descripcion"
+                            name="descripcion"
+                            rows="4"
+                            placeholder="Ingrese una descripción"></textarea>
+
+                        <div class="invalid-feedback" id="errorDescripcion"></div>
+
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="form-check form-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="estado"
+                            name="estado"
+                            checked>
+
+                        <label class="form-check-label" for="estado">
+                            Categoría activa
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- Pie -->
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        <i class="bi bi-x-circle"></i>
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-save"></i>
+
+                        Guardar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

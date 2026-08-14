@@ -1,0 +1,142 @@
+<div class="modal fade"
+    id="modalCliente"
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    aria-labelledby="modalClienteLabel"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'crear_cliente' %}" id="formCliente">
+
+                {% csrf_token %}
+
+                <div class="modal-header bg-primary text-white">
+
+                    <h5 class="modal-title" id="modalClienteLabel">
+                        <i class="bi bi-person-plus-fill me-2"></i>
+                        Registrar Cliente
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label">
+                                Tipo de Identificación
+                            </label>
+
+                            {{ form.tipo_identificacion }}
+
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label">
+                                Número de Identificación
+                            </label>
+
+                            {{ form.identificacion }}
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Nombres
+                            </label>
+
+                            {{ form.nombres }}
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Apellidos
+                            </label>
+
+                            {{ form.apellidos }}
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Teléfono
+                            </label>
+
+                            {{ form.telefono }}
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Correo Electrónico
+                            </label>
+
+                            {{ form.correo }}
+
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">
+                                Dirección
+                            </label>
+
+                            {{ form.direccion }}
+
+                        </div>
+
+                    <div class="col-12">
+
+                        <div class="form-check mt-2">
+
+                            {{ form.estado }}
+
+                            <label class="form-check-label" for="{{ form.estado.id_for_label }}">
+                                Cliente activo
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        <i class="bi bi-x-circle"></i>
+                        Cancelar
+
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-check-circle"></i>
+                        Guardar Cliente
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

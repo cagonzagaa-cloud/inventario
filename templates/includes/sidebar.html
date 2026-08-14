@@ -1,0 +1,169 @@
+<aside id="sidebar" class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+            <i class="bi bi-box-seam"></i>
+        </div>
+
+        <div>
+
+            <h5>Sistema</h5>
+            <small>Inventario</small>
+
+        </div>
+
+    </div>
+
+    <ul class="menu">
+
+        <li class="menu-title">
+            Principal
+        </li>
+
+        <li>
+
+            <a href="{% url 'dashboard' %}">
+
+                <i class="bi bi-grid"></i>
+
+                <span>Dashboard </span>
+
+
+            </a>
+
+        </li>
+
+        <li class="nav-item">
+
+    <a href="{% url 'lista_productos' %}"
+        class="nav-link">
+
+        <i class="bi bi-box-seam"></i>
+
+        <span>
+
+            Productos
+
+        </span>
+
+    </a>
+
+</li>
+
+        <li>
+
+            <a href="{% url 'lista_categorias' %}">
+
+                <i class="bi bi-tags"></i>
+
+                <span>Categorías</span>
+                
+
+            </a>
+
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'lista_proveedores' %}" class="nav-link">
+                <i class="bi bi-truck"></i>
+                <span>Proveedores</span>
+            </a>
+        </li>
+
+        <li class="menu-title">
+
+            Inventario
+
+        </li>
+
+        <li class="nav-item">
+            <a href="{% url 'lista_clientes' %}" class="nav-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Clientes</span>
+            </a>
+        </li>
+
+            <li class="nav-item">
+
+                <a
+                    href="{% url 'lista_entradas' %}"
+                    class="nav-link">
+
+                    <i class="bi bi-box-arrow-in-down"></i>
+
+                    <span>
+
+                        Entradas
+
+                    </span>
+
+                </a>
+
+            </li>
+
+        <li>
+
+            <a href="{% url 'lista_salidas' %}" class="nav-link">
+
+                <i class="bi bi-box-arrow-up"></i>
+
+                Salidas
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="{% url 'kardex' %}">
+
+                <i class="bi bi-graph-up"></i>
+
+                <span>Reportes</span>
+
+            </a>
+
+        </li>
+
+        {% if request.user.is_authenticated and request.user.is_superuser %}
+        <li class="menu-title">
+            Administración
+        </li>
+
+        <li>
+            <a href="{% url 'lista_usuarios' %}">
+                <i class="bi bi-people"></i>
+                Usuarios
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'configuracion_sistema' %}">
+                <i class="bi bi-gear"></i>
+                Configuración
+            </a>
+        </li>
+        {% elif request.user.is_authenticated and request.user.perfil.es_administrador %}
+        <li class="menu-title">
+            Administración
+        </li>
+
+        <li>
+            <a href="{% url 'lista_usuarios' %}">
+                <i class="bi bi-people"></i>
+                Usuarios
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'configuracion_sistema' %}">
+                <i class="bi bi-gear"></i>
+                Configuración
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+
+</aside>

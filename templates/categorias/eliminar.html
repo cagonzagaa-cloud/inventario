@@ -1,0 +1,64 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Eliminar Categoría
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card border-danger shadow">
+
+        <div class="card-header bg-danger text-white">
+
+            <h4>
+
+                Eliminar Categoría
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <p>
+
+                ¿Está seguro que desea eliminar la categoría
+
+                <strong>
+
+                    {{ categoria.nombre }}
+
+                </strong>?
+
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+<button
+    class="btn btn-danger btn-sm btnEliminar"
+    data-url="{% url 'eliminar_categoria' categoria.id %}"
+    data-nombre="{{ categoria.nombre }}">
+
+    <i class="bi bi-trash"></i>
+
+</button>
+
+                <a href="{% url 'lista_categorias' %}"
+                    class="btn btn-secondary">
+
+                    Cancelar
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

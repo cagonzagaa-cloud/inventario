@@ -1,0 +1,72 @@
+.dashboard-card{
+
+    color:white;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:0 12px 25px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+.dashboard-card i{
+
+    font-size:50px;
+
+    opacity:.3;
+
+}
+
+.dashboard-card h2{
+
+    font-size:35px;
+
+    margin-top:10px;
+
+}
+
+.panel{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+
+    min-height: 100%;
+
+}
+
+.panel canvas {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    height: 320px !important;
+}
+
+.panel--chart {
+    min-height: 380px;
+}
+
+.table{
+
+    margin-bottom:0;
+
+}

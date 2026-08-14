@@ -1,0 +1,136 @@
+/*====================================
+    TABLAS
+====================================*/
+
+.table {
+
+    color: #1f2937 !important;
+    background: #ffffff;
+    border-color: #e5e7eb;
+
+}
+
+.table thead th {
+
+    background: #f8fafc !important;
+    color: #374151 !important;
+
+    font-weight: 600;
+
+    border-bottom: 2px solid #d1d5db;
+
+}
+
+.table tbody td {
+
+    color: #374151 !important;
+
+    background: #ffffff;
+
+    vertical-align: middle;
+
+    border-color: #e5e7eb;
+
+}
+
+.table-hover tbody tr:hover {
+
+    background: #f3f4f6 !important;
+
+}
+
+.table-striped tbody tr:nth-child(odd) {
+
+    background: #fafafa;
+
+}
+
+/*====================================
+    BADGES
+====================================*/
+
+.badge{
+
+    font-size:.80rem;
+
+    padding:.45rem .8rem;
+
+    border-radius:8px;
+
+}
+/*=============================
+    DATATABLES
+=============================*/
+
+.dataTables_wrapper{
+
+    padding-top:20px;
+
+}
+
+/* Parte superior */
+.dataTables_length,
+.dataTables_filter{
+
+    margin-bottom:20px;
+
+}
+
+.dataTables_filter input{
+
+    border-radius:10px !important;
+    border:1px solid #ced4da !important;
+    padding:8px 12px !important;
+    margin-left:8px !important;
+
+}
+
+.dataTables_length select{
+
+    border-radius:10px !important;
+    padding:6px 10px !important;
+
+}
+
+/* Parte inferior */
+.dataTables_info{
+
+    margin-top:20px;
+    font-size:.95rem;
+    color:#6c757d;
+
+}
+
+.dataTables_paginate{
+
+    margin-top:20px !important;
+
+}
+
+.dataTables_paginate .pagination{
+
+    gap:8px;
+
+}
+
+.dataTables_paginate .page-link{
+
+    border-radius:10px !important;
+    border:none;
+    padding:8px 14px;
+    color:#0d6efd;
+
+}
+
+.dataTables_paginate .page-item.active .page-link{
+
+    background:#0d6efd;
+    color:white;
+
+}
+
+.dataTables_paginate .page-link:hover{
+
+    background:#070707;
+
+}

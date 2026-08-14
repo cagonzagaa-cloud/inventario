@@ -1,0 +1,287 @@
+{% extends "layouts/base.html" %}
+
+{% load static %}
+
+{% block title %}
+Entradas
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+
+
+    <!-- ENCABEZADO -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+        <div>
+
+            <h3 class="fw-bold">
+
+                <i class="bi bi-box-arrow-in-down"></i>
+
+                Entradas de Inventario
+
+            </h3>
+
+
+            <small class="text-muted">
+
+                Gestión de ingresos de productos al inventario
+
+            </small>
+
+
+        </div>
+
+
+
+        <button
+            id="btnNuevaEntrada"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#entradaModal">
+
+
+            <i class="bi bi-plus-circle"></i>
+
+            Nueva Entrada
+
+
+        </button>
+
+
+    </div>
+
+
+
+
+    <!-- TABLA -->
+
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+
+        <div class="card-body">
+
+
+            <table
+                id="tablaEntradas"
+                class="table table-hover align-middle">
+
+
+                <thead class="table-light">
+
+
+                    <tr>
+
+                        <th>Código</th>
+
+                        <th>Fecha</th>
+
+                        <th>Proveedor</th>
+
+                        <th>Documento</th>
+
+                        <th>Tipo</th>
+
+                        <th>Estado</th>
+
+                        <th>Total</th>
+
+                        <th class="text-center">
+                            Acciones
+                        </th>
+
+                    </tr>
+
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                {% for entrada in entradas %}
+
+
+                    <tr>
+
+
+                        <td>
+                            {{ entrada.codigo }}
+                        </td>
+
+
+
+                        <td>
+                            {{ entrada.fecha }}
+                        </td>
+
+
+
+                        <td>
+                            {{ entrada.proveedor.razon_social }}
+                        </td>
+
+
+
+                        <td>
+                            {{ entrada.numero_documento }}
+                        </td>
+
+
+
+                        <td>
+                            {{ entrada.get_tipo_display }}
+                        </td>
+
+
+
+
+                        <td>
+
+
+                            {% if entrada.estado == "CONFIRMADA" %}
+
+                                <span class="badge bg-success">
+
+                                    Confirmada
+
+                                </span>
+
+
+                            {% elif entrada.estado == "BORRADOR" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    Borrador
+
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+
+                                    Anulada
+
+                                </span>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+
+
+                        <td>
+                            {% load moneda %}
+                            {{ entrada.total|currency }}
+                        </td>
+
+
+
+
+
+                        <td class="text-center">
+
+                            <!-- VER DETALLE -->
+                            <a
+                                href="{% url 'detalle_entrada' entrada.id %}"
+                                class="btn btn-info btn-sm text-white"
+                                title="Ver detalle">
+                                <i class="bi bi-list-ul"></i>
+                            </a>
+
+                            <!-- EDITAR ENTRADA -->
+                            <button
+                                type="button"
+                                class="btn btn-warning btn-sm btnEditarEntrada"
+                                data-id="{{ entrada.id }}"
+                                data-proveedor="{{ entrada.proveedor.id }}"
+                                data-fecha="{{ entrada.fecha|date:'Y-m-d' }}"
+                                data-documento="{{ entrada.numero_documento }}"
+                                data-tipo="{{ entrada.tipo }}"
+                                data-estado="{{ entrada.estado }}"
+                                data-observaciones="{{ entrada.observaciones|default_if_none:'' }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#entradaModal">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <!-- ELIMINAR ENTRADA -->
+                            <button
+                                type="button"
+                                class="btn btn-danger btn-sm btnEliminarEntrada"
+                                data-url="{% url 'eliminar_entrada' entrada.id %}"
+                                data-codigo="{{ entrada.codigo }}"
+                                title="Eliminar entrada">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </td>
+
+
+                    </tr>
+
+
+
+                {% empty %}
+
+
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center text-muted">
+
+                            No existen entradas registradas.
+
+
+                        </td>
+
+                    </tr>
+
+
+
+                {% endfor %}
+
+
+
+                </tbody>
+
+
+            </table>
+
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<!-- MODAL CREAR ENTRADA -->
+
+{% include "entradas/modal.html" %}
+
+
+
+
+
+
+
+{% endblock %}

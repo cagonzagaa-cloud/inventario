@@ -1,0 +1,164 @@
+﻿{% extends "layouts/base.html" %}
+{% load moneda %}
+
+{% block title %}Detalle de Entrada{% endblock %}
+
+{% block content %}
+
+<!-- ENCABEZADO -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold"><i class="bi bi-box-arrow-in-down"></i> {{ entrada.codigo }}</h3>
+        <small class="text-muted">Detalle de la Entrada de Inventario</small>
+    </div>
+
+    <a href="{% url 'lista_entradas' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+<!-- INFORMACION GENERAL -->
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-header bg-primary text-white"><strong>Información General</strong></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label class="fw-bold">Proveedor</label>
+                <p>{{ entrada.proveedor.razon_social }}</p>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Fecha</label>
+                <p>{{ entrada.fecha }}</p>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Documento</label>
+                <p>{{ entrada.numero_documento }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="fw-bold">Tipo</label>
+                <p>{{ entrada.get_tipo_display }}</p>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Estado</label>
+                <p>
+                    {% if entrada.estado == 'BORRADOR' %}
+                        <span class="badge bg-warning text-dark">Borrador</span>
+                    {% elif entrada.estado == 'CONFIRMADA' %}
+                        <span class="badge bg-success">Confirmada</span>
+                    {% else %}
+                        <span class="badge bg-danger">Anulada</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-4">
+                <label class="fw-bold">Usuario</label>
+                <p>{{ entrada.usuario.username }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DETALLE PRODUCTOS -->
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list-check"></i> Detalle de la Entrada</h5>
+        <div class="d-flex gap-2">
+            {% if entrada.estado == 'BORRADOR' %}
+                <button class="btn btn-primary" id="btnNuevoDetalle" data-bs-toggle="modal" data-bs-target="#detalleModal">
+                    <i class="bi bi-plus-circle"></i> Agregar Producto
+                </button>
+                <form method="POST" action="{% url 'confirmar_entrada' entrada.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success" onclick="return confirm('¿Está seguro de confirmar esta entrada?');">
+                        <i class="bi bi-check-circle"></i> Confirmar Entrada
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="tablaDetalleEntrada">
+                <thead class="table-light">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                        <th>Tarifa IVA</th>
+                        <th>Subtotal</th>
+                        <th width="150">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                        <tr>
+                            <td>{{ detalle.producto.nombre }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>{{ detalle.costo|currency }}</td>
+                            <td>
+                                {% if detalle.tarifa is not None %}
+                                    {{ detalle.tarifa|floatformat:0 }}%
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ detalle.subtotal|currency }}</td>
+                            <td class="text-center">
+                                {% if entrada.estado == 'BORRADOR' %}
+                                    <button type="button" class="btn btn-outline-warning btn-sm rounded-circle btnEditarDetalle"
+                                        data-id="{{ detalle.id }}"
+                                        data-url="{% url 'editar_detalle' detalle.id %}"
+                                        data-producto="{{ detalle.producto.id }}"
+                                        data-cantidad="{{ detalle.cantidad }}"
+                                        data-costo="{{ detalle.costo }}"
+                                        data-bs-toggle="modal" data-bs-target="#detalleModal" title="Editar detalle">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-circle btnEliminarDetalle"
+                                        data-url="{% url 'eliminar_detalle_entrada' detalle.id %}"
+                                        data-producto="{{ detalle.producto.nombre }}"
+                                        data-bs-toggle="modal" data-bs-target="#modalEliminarDetalle" title="Eliminar detalle">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No existen productos registrados.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- TOTAL -->
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body">
+        <div class="row g-3 justify-content-end">
+            <div class="col-md-4">
+                <div class="d-flex justify-content-between">
+                    <span>Base imponible</span>
+                    <strong>{{ entrada.total_base|currency }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <span>IVA</span>
+                    <strong>{{ entrada.total_iva|currency }}</strong>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <h4>Total: <strong>{{ entrada.total_con_iva|currency }}</strong></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALES -->
+{% include "entradas/modal_detalle.html" %}
+{% include "entradas/modal_eliminar_detalle.html" %}
+
+{% endblock %}

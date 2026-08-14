@@ -1,0 +1,219 @@
+<div class="modal fade"
+    id="entradaModal"
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- =============================== -->
+            <!-- CABECERA -->
+            <!-- =============================== -->
+
+            <div class="modal-header bg-primary text-white">
+
+                <h4 id="tituloEntrada">
+
+                Nueva Entrada
+
+                </h4>
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- =============================== -->
+            <!-- FORMULARIO -->
+            <!-- =============================== -->
+
+            <form
+                id="formEntrada"
+                method="POST"
+                action="{% url 'crear_entrada' %}">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    <!-- =============================== -->
+                    <!-- INFORMACIÓN GENERAL -->
+                    <!-- =============================== -->
+
+                    <div class="card border-0 shadow-sm mb-4">
+
+                        <div class="card-header bg-light">
+
+                            <strong>
+
+                                <i class="bi bi-file-earmark-text"></i>
+
+                                Información de la Entrada
+
+                            </strong>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+
+                                        Fecha
+
+                                    </label>
+
+                                    {{ form.fecha }}
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+
+                                        Tipo
+
+                                    </label>
+
+                                    {{ form.tipo }}
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Proveedor
+
+                                </label>
+
+                                {{ form.proveedor }}
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Número de Documento
+
+                                </label>
+
+                                {{ form.numero_documento }}
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+
+                                        Estado
+
+                                    </label>
+
+                                    {{ form.estado }}
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+
+                                        Total
+
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        value="$ 0.00"
+                                        readonly
+                                        id="totalEntrada">
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    Observaciones
+
+                                </label>
+
+                                {{ form.observaciones }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =============================== -->
+                    <!-- MENSAJE -->
+                    <!-- =============================== -->
+
+                    <div
+                        class="alert alert-info d-flex align-items-center">
+
+                        <i class="bi bi-info-circle fs-4 me-2"></i>
+
+                        <div>
+
+                            Una vez creada la entrada podrá agregar
+                            los productos que ingresarán al inventario.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- =============================== -->
+                <!-- PIE -->
+                <!-- =============================== -->
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                        <button
+                        id="btnGuardarEntrada"
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-save"></i>
+
+                        Guardar Entrada
+
+                        </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

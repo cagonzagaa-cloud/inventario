@@ -1,0 +1,424 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Iniciar Sesión | Sistema de Inventario</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background: linear-gradient(180deg,#f4f7fc 0%, #ffffff 100%);
+
+}
+
+.login-container{
+
+    min-height:100vh;
+
+    display:flex;
+
+}
+
+.left-panel{
+
+    width:52%;
+
+    background:linear-gradient(135deg,#2563eb,#1e3a8a);
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px 48px;
+
+    min-height:100vh;
+
+}
+
+.left-content{
+
+    max-width:500px;
+
+}
+
+.left-content h1{
+
+    font-size:40px;
+
+    font-weight:700;
+
+    margin-bottom:14px;
+
+}
+
+.left-content p{
+
+    font-size:18px;
+
+    line-height:32px;
+
+    opacity:.9;
+
+}
+
+.right-panel{
+
+    width:48%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:40px 20px;
+
+}
+
+.login-card{
+
+    width:380px;
+
+    background:white;
+
+    border-radius:14px;
+
+    padding:32px;
+
+    box-shadow:0 14px 30px rgba(0,0,0,.06);
+
+    animation:fade .5s ease;
+
+}
+
+.logo{
+
+    width:72px;
+
+    height:72px;
+
+    margin:auto;
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:34px;
+
+}
+
+.form-control{
+
+    height:44px;
+
+    border-radius:10px;
+
+}
+
+.input-group-text{
+
+    border-radius:12px 0 0 12px;
+
+    background:#fff;
+
+}
+
+.btn-login{
+
+    height:48px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    transition:.2s;
+
+}
+
+.btn-login:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.password-toggle{
+
+    cursor:pointer;
+
+}
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="alert alert-success alert-dismissible fade show">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            {{ message }}
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+@keyframes fade{
+
+from{
+
+opacity:0;
+
+transform:translateY(25px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+
+@media(max-width:992px){
+
+.left-panel{
+
+display:none;
+
+}
+
+.right-panel{
+
+width:100%;
+
+}
+
+.login-card{
+
+width:90%;
+
+}
+
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!-- Panel izquierdo -->
+
+    <div class="left-panel">
+
+        <div class="left-content">
+
+            <h1>Sistema de Inventario</h1>
+
+            <p>
+
+                Administra categorías, productos, proveedores,
+                entradas y salidas desde una sola plataforma moderna.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Panel derecho -->
+
+    <div class="right-panel">
+
+        <div class="login-card">
+
+            <div class="text-center mb-4">
+
+                <div class="logo">
+
+                    <i class="bi bi-box-seam"></i>
+
+                </div>
+
+                <h3 class="mt-4">
+
+                    Bienvenido
+
+                </h3>
+
+                <p class="text-muted">
+
+                    Inicie sesión para continuar
+
+                </p>
+
+            </div>
+
+            {% load socialaccount %}
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Usuario
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+
+                            <i class="bi bi-person"></i>
+
+                        </span>
+
+                        {{ form.username }}
+
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+
+                        Contraseña
+
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+
+                            <i class="bi bi-lock"></i>
+
+                        </span>
+
+                        {{ form.password }}
+
+                        <span class="input-group-text password-toggle">
+
+                            <i class="bi bi-eye" id="togglePassword"></i>
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary btn-login w-100">
+
+                    <i class="bi bi-box-arrow-in-right"></i>
+
+                    Ingresar
+
+                </button>
+            </form>
+
+            <div class="mt-3">
+                <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-google"></i>
+                    Iniciar con Google
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    const usuario=document.getElementById("id_username");
+
+    const password=document.getElementById("id_password");
+
+    usuario.classList.add("form-control");
+
+    password.classList.add("form-control");
+
+    document.getElementById("togglePassword").addEventListener("click",function(){
+
+        if(password.type==="password"){
+
+            password.type="text";
+
+            this.classList.remove("bi-eye");
+
+            this.classList.add("bi-eye-slash");
+
+        }else{
+
+            password.type="password";
+
+            this.classList.remove("bi-eye-slash");
+
+            this.classList.add("bi-eye");
+
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</html>

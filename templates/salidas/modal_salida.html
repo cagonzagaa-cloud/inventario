@@ -1,0 +1,162 @@
+<div class="modal fade"
+    id="modalSalida"
+    tabindex="-1"
+    aria-hidden="true">
+
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+
+        <div class="modal-content">
+
+
+            <form method="POST"
+                action="{% url 'crear_salida' %}">
+
+
+                {% csrf_token %}
+
+
+                <div class="modal-header bg-primary text-white">
+
+
+                    <h5 class="modal-title">
+
+                        <i class="bi bi-box-arrow-up"></i>
+
+                        Nueva Salida
+
+                    </h5>
+
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal">
+
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="modal-body">
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Cliente
+                            </label>
+
+                            {{ form.cliente }}
+
+                        </div>
+
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Fecha
+                            </label>
+
+                            {{ form.fecha }}
+
+                        </div>
+
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Número Documento
+                            </label>
+
+                            {{ form.numero_documento }}
+
+                        </div>
+
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Tipo
+                            </label>
+
+                            {{ form.tipo }}
+
+                        </div>
+
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Estado
+                            </label>
+
+                            {{ form.estado }}
+
+                        </div>
+
+
+
+                        <div class="col-md-12 mb-3">
+
+                            <label class="form-label">
+                                Observaciones
+                            </label>
+
+                            {{ form.observaciones }}
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-save"></i>
+
+                        Guardar
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

@@ -1,0 +1,185 @@
+{% extends 'layouts/base.html' %}
+
+
+{% block title %}
+Kardex de Inventario
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<h3 class="fw-bold mb-4">
+
+    <i class="bi bi-journal-text"></i>
+
+    Kardex de Inventario
+
+</h3>
+
+
+
+<div class="card">
+
+
+<div class="card-body">
+
+
+<div class="table-responsive">
+
+
+<table 
+id="tablaKardex"
+class="table table-hover align-middle">
+
+
+<thead class="table-light">
+
+
+<tr>
+
+<th>#</th>
+
+<th>Fecha</th>
+
+<th>Usuario</th>
+
+<th>Producto</th>
+
+<th>Movimiento</th>
+
+<th>Cantidad</th>
+
+<th>Stock anterior</th>
+
+<th>Stock nuevo</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody>
+
+
+{% for movimiento in movimientos %}
+
+<tr {% with detalle=movimiento.get_detail_url %}{% if detalle %}data-href="{{ detalle }}"{% endif %}{% endwith %}>
+
+
+<td>
+{{ forloop.counter }}
+</td>
+
+
+<td>
+{{ movimiento.fecha|date:"d/m/Y H:i" }}
+</td>
+
+
+<td>
+{{ movimiento.usuario.username }}
+</td>
+
+
+<td>
+{{ movimiento.producto.nombre }}
+</td>
+
+
+<td>
+
+
+{% if movimiento.tipo == "ENTRADA" %}
+
+<span class="badge bg-success">
+
+Entrada
+
+</span>
+
+
+{% else %}
+
+
+<span class="badge bg-danger">
+
+Salida
+
+</span>
+
+
+{% endif %}
+
+
+</td>
+
+
+
+<td>
+
+{{ movimiento.cantidad }}
+
+</td>
+
+
+
+<td>
+
+{{ movimiento.stock_anterior }}
+
+</td>
+
+
+
+<td>
+
+{{ movimiento.stock_nuevo }}
+
+</td>
+
+
+</tr>
+
+
+{% empty %}
+
+
+<tr>
+
+<td colspan="8"
+class="text-center">
+
+
+No existen movimientos registrados.
+
+
+</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,152 @@
+<div class="modal fade"
+    id="modalEditarCliente"
+    tabindex="-1"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    aria-labelledby="modalEditarClienteLabel"
+    aria-hidden="true">
+
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+    <div class="modal-content">
+
+        <form method="POST"
+                id="formEditarCliente">
+
+            {% csrf_token %}
+
+            <div class="modal-header bg-warning">
+
+                <h5 class="modal-title" id="modalEditarClienteLabel">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Editar Cliente
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Tipo de Identificación</label>
+                        <select class="form-select"
+                                id="editar_tipo_identificacion"
+                                name="tipo_identificacion">
+
+                            <option value="CEDULA">Cédula</option>
+                            <option value="RUC">RUC</option>
+                            <option value="PASAPORTE">Pasaporte</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="form-label">Número de Identificación</label>
+
+                        <input type="text"
+                                class="form-control"
+                                id="editar_identificacion"
+                                name="identificacion">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Nombres</label>
+
+                        <input type="text"
+                                class="form-control"
+                                id="editar_nombres"
+                                name="nombres">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Apellidos</label>
+
+                        <input type="text"
+                                class="form-control"
+                                id="editar_apellidos"
+                                name="apellidos">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Teléfono</label>
+
+                        <input type="text"
+                                class="form-control"
+                                id="editar_telefono"
+                                name="telefono">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Correo</label>
+
+                        <input type="email"
+                                class="form-control"
+                                id="editar_correo"
+                                name="correo">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Dirección</label>
+
+                        <input type="text"
+                                class="form-control"
+                                id="editar_direccion"
+                                name="direccion">
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="form-check">
+
+                            <input class="form-check-input"
+                                    type="checkbox"
+                                    id="editar_estado"
+                                    name="estado">
+
+                            <label class="form-check-label"
+                                    for="editar_estado">
+
+                                Cliente activo
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <button type="submit"
+                        class="btn btn-warning">
+
+                    <i class="bi bi-check-circle"></i>
+                    Actualizar
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</div>
