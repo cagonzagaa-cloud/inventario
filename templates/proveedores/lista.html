@@ -1,0 +1,114 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Proveedores
+{% endblock %}
+
+{% block content %}
+
+<div class="page-shell">
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">Inventario</span>
+            <h2 class="page-title">Proveedores</h2>
+            <p class="page-subtitle">Gestión de proveedores.</p>
+        </div>
+
+        <div class="view-tools d-flex flex-wrap align-items-center gap-3">
+            <button id="btnNuevoProveedor" type="button" class="btn-primary-modern">
+                <i class="bi bi-plus-circle"></i>
+                Nuevo proveedor
+            </button>
+        </div>
+
+    </div>
+
+    <div id="proveedorFormPanel" class="page-form mt-4">
+        <div class="form-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Formulario proveedor</h3>
+            <button id="btnCerrarProveedor" type="button" class="btn btn-link text-decoration-none">&times;</button>
+        </div>
+        <form id="formProveedor" method="POST" action="{% url 'crear_proveedor' %}" data-create-url="{% url 'crear_proveedor' %}">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-section">
+                    <div>
+                        <label for="id_codigo">Código</label>
+                        {{ form.codigo }}
+                    </div>
+                    <div>
+                        <label for="id_identificacion">Identificación</label>
+                        {{ form.identificacion }}
+                    </div>
+                    <div>
+                        <label for="id_razon_social">Razón social</label>
+                        {{ form.razon_social }}
+                    </div>
+                    <div>
+                        <label for="id_nombre_comercial">Nombre comercial</label>
+                        {{ form.nombre_comercial }}
+                    </div>
+                    <div>
+                        <label for="id_telefono">Teléfono</label>
+                        {{ form.telefono }}
+                    </div>
+                    <div>
+                        <label for="id_correo">Correo</label>
+                        {{ form.correo }}
+                    </div>
+                    <div>
+                        <label for="id_direccion">Dirección</label>
+                        {{ form.direccion }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn-primary-modern">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modern-card table-panel mt-4">
+        <table id="tablaProveedores" class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Identificación</th>
+                    <th>Razón social</th>
+                    <th>Contacto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                <tr>
+                    <td>{{ proveedor.codigo }}</td>
+                    <td>{{ proveedor.identificacion }}</td>
+                    <td>{{ proveedor.razon_social }}</td>
+                    <td>{{ proveedor.contacto }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary btnEditarProveedor"
+                            data-id="{{ proveedor.pk }}"
+                            data-codigo="{{ proveedor.codigo }}"
+                            data-identificacion="{{ proveedor.identificacion }}"
+                            data-razon="{{ proveedor.razon_social }}"
+                            data-nombre="{{ proveedor.nombre_comercial }}"
+                            data-telefono="{{ proveedor.telefono }}"
+                            data-correo="{{ proveedor.correo }}"
+                            data-direccion="{{ proveedor.direccion }}"
+                            data-action="{% url 'editar_proveedor' proveedor.pk %}">
+                            Editar
+                        </button>
+                        <a href="{% url 'eliminar_proveedor' proveedor.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
