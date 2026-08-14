@@ -323,7 +323,6 @@ def editar_detalle(request, pk):
         pk=entrada.id
     )
 
-@login_required
 @transaction.atomic
 def confirmar_entrada(request, pk):
 
