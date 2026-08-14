@@ -27,7 +27,11 @@ Productos
 
     {# Product form must appear before the table for tests #}
     <div id="productoFormPanel" class="page-form mt-4">
-        <form id="formProducto" method="POST" action="{% url 'crear_producto' %}">
+        <div class="form-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Formulario producto</h3>
+            <button id="btnCerrarProducto" type="button" class="btn btn-link text-decoration-none">&times;</button>
+        </div>
+        <form id="formProducto" method="POST" action="{% url 'crear_producto' %}" data-create-url="{% url 'crear_producto' %}">
             {% csrf_token %}
             <div class="form-grid">
                 <div class="form-section">
@@ -66,7 +70,18 @@ Productos
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.categoria.nombre }}</td>
                     <td>{{ producto.stock }}</td>
-                    <td></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary btnEditarProducto"
+                            data-id="{{ producto.pk }}"
+                            data-codigo="{{ producto.codigo }}"
+                            data-nombre="{{ producto.nombre }}"
+                            data-categoria="{{ producto.categoria.pk }}"
+                            data-stock="{{ producto.stock }}"
+                            data-action="{% url 'editar_producto' producto.pk %}">
+                            Editar
+                        </button>
+                        <a href="{% url 'eliminar_producto' producto.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,0 +1,85 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Categorías
+{% endblock %}
+
+{% block content %}
+
+<div class="page-shell">
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">Inventario</span>
+            <h2 class="page-title">Categorías</h2>
+            <p class="page-subtitle">Gestión de categorías.</p>
+        </div>
+
+        <div class="view-tools d-flex flex-wrap align-items-center gap-3">
+            <button id="btnNuevaCategoria" type="button" class="btn-primary-modern">
+                <i class="bi bi-plus-circle"></i>
+                Nueva categoría
+            </button>
+        </div>
+
+    </div>
+
+    <div id="categoriaFormPanel" class="page-form mt-4">
+        <div class="form-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Formulario categoría</h3>
+            <button id="btnCerrarCategoria" type="button" class="btn btn-link text-decoration-none">&times;</button>
+        </div>
+        <form id="formCategoria" method="POST" action="{% url 'crear_categoria' %}" data-create-url="{% url 'crear_categoria' %}">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-section">
+                    <div>
+                        <label for="id_nombre">Nombre</label>
+                        {{ form.nombre }}
+                    </div>
+                    <div>
+                        <label for="id_descripcion">Descripción</label>
+                        {{ form.descripcion }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" class="btn-primary-modern">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modern-card table-panel mt-4">
+        <table id="tablaCategorias" class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for categoria in categorias %}
+                <tr>
+                    <td>{{ categoria.nombre }}</td>
+                    <td>{{ categoria.descripcion }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary btnEditarCategoria"
+                            data-id="{{ categoria.pk }}"
+                            data-nombre="{{ categoria.nombre }}"
+                            data-descripcion="{{ categoria.descripcion }}"
+                            data-action="{% url 'editar_categoria' categoria.pk %}">
+                            Editar
+                        </button>
+                        <a href="{% url 'eliminar_categoria' categoria.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
