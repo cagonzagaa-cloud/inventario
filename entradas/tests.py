@@ -76,6 +76,9 @@ class DetalleEntradaIvaTest(TestCase):
             costo=Decimal("10.00"),
         )
 
+        # Authenticate client before confirming entrada
+        self.client.force_login(self.user)
+
         response = self.client.post(
             reverse("confirmar_entrada", args=[self.entrada.pk]),
             follow=True,
