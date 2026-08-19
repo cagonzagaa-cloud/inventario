@@ -23,6 +23,7 @@ django.setup()
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
+from django.db import transaction
 
 
 # ============================================================
@@ -30,6 +31,7 @@ from django.contrib.auth import get_user_model
 # ============================================================
 
 from usuarios.models import PerfilUsuario
+from configuracion.models import ConfiguracionSistema
 from productos.models import Producto
 from proveedores.models import Proveedor
 from clientes.models import Cliente
@@ -166,16 +168,7 @@ def menu_principal():
             ),
         ],
 
-        [
-            InlineKeyboardButton(
-                "📈 Reportes",
-                callback_data="reportes"
-            ),
-            InlineKeyboardButton(
-                "👥 Administración",
-                callback_data="admin"
-            ),
-        ],
+        [InlineKeyboardButton("👥 Administración", callback_data="admin")],
 
         [
             InlineKeyboardButton(
@@ -1545,55 +1538,120 @@ async def procesar_cantidad_salida(update, context):
     await update.message.reply_text(f"Salida *{codigo}* confirmada.\nTotal: *${total}*", parse_mode="Markdown", reply_markup=menu_principal())
 
 
-async def mostrar_reportes(query):
-
-    await query.edit_message_text(
-
-        "📈 *REPORTES*\n\n"
-        "El módulo de reportes será conectado posteriormente.",
-
-        parse_mode="Markdown",
-
-        reply_markup=boton_volver()
-    )
-
-
 # ============================================================
 # ADMINISTRACIÓN
 # ============================================================
 
-async def mostrar_admin(
-    query,
-    context
-):
+def menu_administracion():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("👥 Usuarios", callback_data="admin_usuarios")],
+        [InlineKeyboardButton("⚙️ Configuración", callback_data="admin_configuracion")],
+        [InlineKeyboardButton("⬅️ Volver al menú", callback_data="menu")],
+    ])
 
-    if not context.user_data.get(
-        "es_admin"
-    ):
 
-        await query.edit_message_text(
+@sync_to_async
+def obtener_usuarios_admin():
+    return list(User.objects.select_related("perfil").order_by("username")[:30])
 
-            "🚫 *ACCESO DENEGADO*\n\n"
-            "Esta sección está disponible "
-            "únicamente para administradores.",
 
-            parse_mode="Markdown",
+@sync_to_async
+def obtener_configuracion_admin():
+    configuracion, _ = ConfiguracionSistema.objects.get_or_create(pk=1)
+    return configuracion
 
-            reply_markup=boton_volver()
-        )
 
+def _validar_actor_admin(actor):
+    perfil = getattr(actor, "perfil", None)
+    if not (actor.is_active and (actor.is_superuser or (perfil and perfil.es_administrador))):
+        raise PermissionError("Ya no tienes permisos de administrador.")
+
+
+@sync_to_async
+@transaction.atomic
+def alternar_estado_usuario(actor_id, usuario_id):
+    actor = User.objects.select_related("perfil").get(pk=actor_id)
+    _validar_actor_admin(actor)
+    usuario = User.objects.select_for_update().get(pk=usuario_id)
+    if usuario.pk == actor.pk:
+        raise ValueError("No puedes desactivar tu propia cuenta.")
+    if usuario.is_superuser and not actor.is_superuser:
+        raise PermissionError("Solo otro superusuario puede cambiar ese estado.")
+    usuario.is_active = not usuario.is_active
+    usuario.save(update_fields=["is_active"])
+    return usuario.username, usuario.is_active
+
+
+@sync_to_async
+@transaction.atomic
+def alternar_rol_usuario(actor_id, usuario_id):
+    actor = User.objects.select_related("perfil").get(pk=actor_id)
+    _validar_actor_admin(actor)
+    usuario = User.objects.select_related("perfil").select_for_update().get(pk=usuario_id)
+    if usuario.pk == actor.pk:
+        raise ValueError("No puedes cambiar tu propio rol.")
+    if usuario.is_superuser:
+        raise ValueError("No se puede cambiar el rol de un superusuario.")
+    usuario.perfil.rol = (
+        PerfilUsuario.Rol.USUARIO
+        if usuario.perfil.es_administrador
+        else PerfilUsuario.Rol.ADMIN
+    )
+    usuario.perfil.save(update_fields=["rol"])
+    return usuario.username, usuario.perfil.get_rol_display()
+
+
+async def mostrar_admin(query, context):
+    if not context.user_data.get("es_admin"):
+        await query.edit_message_text("🚫 Acceso denegado.", reply_markup=boton_volver())
         return
-
-
     await query.edit_message_text(
+        "👥 *ADMINISTRACIÓN*\n\nGestiona usuarios o consulta la configuración del sistema.",
+        parse_mode="Markdown", reply_markup=menu_administracion(),
+    )
 
-        "👥 *ADMINISTRACIÓN*\n\n"
-        "Panel administrativo disponible "
-        "para el administrador.",
 
-        parse_mode="Markdown",
+async def mostrar_usuarios_admin(query):
+    usuarios = await obtener_usuarios_admin()
+    teclado = []
+    for usuario in usuarios:
+        estado = "✅" if usuario.is_active else "⛔"
+        rol = "Admin" if usuario.is_superuser or usuario.perfil.es_administrador else "Usuario"
+        teclado.append([InlineKeyboardButton(
+            f"{estado} {usuario.username} · {rol}", callback_data=f"admin_usuario_{usuario.pk}"
+        )])
+    teclado.append([InlineKeyboardButton("⬅️ Administración", callback_data="admin")])
+    await query.edit_message_text(
+        "👥 *USUARIOS*\n\nSelecciona un usuario para administrar su estado y rol.",
+        parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(teclado),
+    )
 
-        reply_markup=boton_volver()
+
+async def mostrar_usuario_admin(query, usuario_id):
+    usuarios = await obtener_usuarios_admin()
+    usuario = next((item for item in usuarios if item.pk == usuario_id), None)
+    if not usuario:
+        await query.edit_message_text("El usuario ya no existe.", reply_markup=menu_administracion())
+        return
+    rol = "Administrador" if usuario.is_superuser or usuario.perfil.es_administrador else "Usuario"
+    estado = "Activo" if usuario.is_active else "Inactivo"
+    teclado = [
+        [InlineKeyboardButton("🔄 Activar / desactivar", callback_data=f"admin_estado_{usuario.pk}")],
+    ]
+    if not usuario.is_superuser:
+        teclado.append([InlineKeyboardButton("🔐 Cambiar rol", callback_data=f"admin_rol_{usuario.pk}")])
+    teclado.append([InlineKeyboardButton("⬅️ Usuarios", callback_data="admin_usuarios")])
+    await query.edit_message_text(
+        f"👤 *{usuario.username}*\n\nNombre: {usuario.get_full_name() or '-'}\nCorreo: {usuario.email or '-'}\nRol: *{rol}*\nEstado: *{estado}*",
+        parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(teclado),
+    )
+
+
+async def mostrar_configuracion_admin(query):
+    config = await obtener_configuracion_admin()
+    await query.edit_message_text(
+        f"⚙️ *CONFIGURACIÓN DEL SISTEMA*\n\nEmpresa: *{config.nombre_empresa}*\nRUC/RIF: {config.rif or '-'}\nCorreo: {config.correo or '-'}\nTeléfono: {config.telefono or '-'}\nMoneda: {config.moneda}\nIVA configurado: {config.impuesto_iva}%\nAlerta de stock: {config.stock_minimo_alerta}\nHorario: {config.horario_atencion or '-'}",
+        parse_mode="Markdown", reply_markup=menu_administracion(),
     )
 
 
@@ -2008,19 +2066,6 @@ async def manejar_boton(
 
 
     # ========================================================
-    # REPORTES
-    # ========================================================
-
-    if opcion == "reportes":
-
-        await mostrar_reportes(
-            query
-        )
-
-        return
-
-
-    # ========================================================
     # ADMINISTRACIÓN
     # ========================================================
 
@@ -2034,6 +2079,37 @@ async def manejar_boton(
 
         )
 
+        return
+
+
+    if opcion == "admin_usuarios":
+        await mostrar_usuarios_admin(query)
+        return
+
+    if opcion == "admin_configuracion":
+        await mostrar_configuracion_admin(query)
+        return
+
+    if opcion.startswith("admin_usuario_"):
+        await mostrar_usuario_admin(query, int(opcion.replace("admin_usuario_", "")))
+        return
+
+    if opcion.startswith("admin_estado_"):
+        usuario_id = int(opcion.replace("admin_estado_", ""))
+        try:
+            await alternar_estado_usuario(context.user_data["usuario_id"], usuario_id)
+            await mostrar_usuario_admin(query, usuario_id)
+        except (ValueError, PermissionError, KeyError) as exc:
+            await query.edit_message_text(f"❌ {exc}", reply_markup=menu_administracion())
+        return
+
+    if opcion.startswith("admin_rol_"):
+        usuario_id = int(opcion.replace("admin_rol_", ""))
+        try:
+            await alternar_rol_usuario(context.user_data["usuario_id"], usuario_id)
+            await mostrar_usuario_admin(query, usuario_id)
+        except (ValueError, PermissionError, KeyError) as exc:
+            await query.edit_message_text(f"❌ {exc}", reply_markup=menu_administracion())
         return
 
 
