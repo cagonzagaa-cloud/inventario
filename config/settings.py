@@ -58,10 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
     'usuarios',
     'dashboard',
     'categorias',
@@ -74,6 +70,7 @@ INSTALLED_APPS = [
     'entradas',
     'clientes',
     'salidas',
+    'telegram_bot'
 ]
 
 MIDDLEWARE = [
@@ -83,7 +80,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -100,6 +96,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'telegram_bot.context_processors.notificaciones',
             ],
         },
     },
@@ -109,25 +106,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 SITE_ID = 1
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_LOGIN_METHODS = {'username'}
-SOCIALACCOUNT_QUERY_EMAIL = True
-SOCIALACCOUNT_EMAIL_REQUIRED = False
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-    }
-}
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 
 # Database
@@ -151,10 +130,10 @@ elif os.getenv('DATABASE_HOST'):
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('DATABASE_NAME', 'postgres'),
-            'USER': os.getenv('DATABASE_USER', 'postgres'),
+            'USER': os.getenv('DATABASE_USER', 'postgres.chffbwcfppmyheajddrs'),
             'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-            'HOST': os.getenv('DATABASE_HOST', 'db.chffbwcfppmyheajddrs.supabase.co'),
-            'PORT': os.getenv('DATABASE_PORT', '5432'),
+            'HOST': os.getenv('DATABASE_HOST', 'aws-0-us-east-2.pooler.supabase.com'),
+            'PORT': os.getenv('DATABASE_PORT', '6543'),
             'OPTIONS': {
                 'sslmode': os.getenv('DATABASE_SSLMODE', 'require'),
             },
@@ -174,10 +153,10 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('DATABASE_NAME', 'postgres'),
-            'USER': os.getenv('DATABASE_USER', 'postgres'),
+            'USER': os.getenv('DATABASE_USER', 'postgres.chffbwcfppmyheajddrs'),
             'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-            'HOST': os.getenv('DATABASE_HOST', 'db.chffbwcfppmyheajddrs.supabase.co'),
-            'PORT': os.getenv('DATABASE_PORT', '5432'),
+            'HOST': os.getenv('DATABASE_HOST', 'aws-0-us-east-2.pooler.supabase.com'),
+            'PORT': os.getenv('DATABASE_PORT', '6543'),
             'OPTIONS': {
                 'sslmode': os.getenv('DATABASE_SSLMODE', 'require'),
             },
@@ -245,8 +224,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
-ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
-SOCIALACCOUNT_AUTO_SIGNUP = True
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True

@@ -45,6 +45,10 @@
 
                     <div class="row">
 
+                        <div class="col-12">
+                            <div class="alert alert-info"><strong>Paso 1 de 2:</strong> registra los datos generales. Después agregarás productos y revisarás el stock antes de confirmar.</div>
+                        </div>
+
 
                         <div class="col-md-6 mb-3">
 
@@ -95,13 +99,23 @@
 
 
                         <div class="col-md-6 mb-3">
+                            <div class="form-check mt-4">
+                                {{ form.operacion_tributaria }}
+                                <label class="form-check-label" for="{{ form.operacion_tributaria.id_for_label }}">{{ form.operacion_tributaria.label }}</label>
+                            </div>
+                        </div>
 
-                            <label class="form-label">
-                                Estado
-                            </label>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="{{ form.actividad_tributaria.id_for_label }}">{{ form.actividad_tributaria.label }}</label>
+                            {{ form.actividad_tributaria }}
+                        </div>
 
-                            {{ form.estado }}
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check mt-4">{{ form.tiene_registro_turismo }} <label class="form-check-label" for="{{ form.tiene_registro_turismo.id_for_label }}">{{ form.tiene_registro_turismo.label }}</label></div>
+                        </div>
 
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check mt-4">{{ form.tiene_licencia_anual }} <label class="form-check-label" for="{{ form.tiene_licencia_anual.id_for_label }}">{{ form.tiene_licencia_anual.label }}</label></div>
                         </div>
 
 

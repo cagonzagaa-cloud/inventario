@@ -70,29 +70,8 @@
 
                                 </label>
 
-                                <select
-                                    name="producto"
-                                    id="id_producto"
-                                    class="form-select"
-                                    required>
-
-                                    <option value="">
-
-                                        Seleccione un producto...
-
-                                    </option>
-
-                                    {% for producto in productos %}
-
-                                        <option value="{{ producto.id }}">
-
-                                            {{ producto.codigo }} - {{ producto.nombre }}
-
-                                        </option>
-
-                                    {% endfor %}
-
-                                </select>
+                                {{ form.producto }}
+                                <div class="form-text">Seleccione el producto que realmente consta en el documento.</div>
 
                             </div>
 
@@ -106,14 +85,7 @@
 
                                     </label>
 
-                                    <input
-                                        type="number"
-                                        id="id_cantidad"
-                                        name="cantidad"
-                                        class="form-control"
-                                        min="1"
-                                        value="1"
-                                        required>
+                                    {{ form.cantidad }}
 
                                 </div>
 
@@ -125,14 +97,7 @@
 
                                     </label>
 
-                                    <input
-                                        type="number"
-                                        id="id_costo"
-                                        name="costo"
-                                        class="form-control"
-                                        min="0"
-                                        step="0.01"
-                                        required>
+                                    {{ form.costo }}
 
                                 </div>
 

@@ -40,8 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-            document.getElementById("editar_estado").value =
-                this.dataset.estado;
+            document.getElementById("editar_operacion_tributaria").checked =
+                this.dataset.operacionTributaria === "true";
+
+            document.getElementById("editar_actividad_tributaria").value =
+                this.dataset.actividadTributaria || "";
+
+            document.getElementById("editar_registro_turismo").checked =
+                this.dataset.registroTurismo === "true";
+
+            document.getElementById("editar_licencia_anual").checked =
+                this.dataset.licenciaAnual === "true";
 
 
 

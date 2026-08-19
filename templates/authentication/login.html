@@ -1,5 +1,4 @@
 {% load static %}
-{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -304,7 +303,6 @@ width:90%;
 
             </div>
 
-            {% load socialaccount %}
             <form method="POST">
 
                 {% csrf_token %}
@@ -367,13 +365,6 @@ width:90%;
 
                 </button>
             </form>
-
-            <div class="mt-3">
-                <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger w-100">
-                    <i class="bi bi-google"></i>
-                    Iniciar con Google
-                </a>
-            </div>
 
         </div>
 

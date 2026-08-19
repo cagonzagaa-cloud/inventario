@@ -33,18 +33,20 @@ Productos
         </div>
         <form id="formProducto" method="POST" action="{% url 'crear_producto' %}" data-create-url="{% url 'crear_producto' %}">
             {% csrf_token %}
-            <div class="form-grid">
-                <div class="form-section">
-                    <h3>Información</h3>
-                    <div>
-                        <label for="id_codigo">Código</label>
-                        {{ form.codigo }}
-                    </div>
-                    <div>
-                        <label for="id_nombre">Nombre</label>
-                        {{ form.nombre }}
-                    </div>
+            {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="row g-3">
+                {% for field in form %}
+                <div class="{% if field.name == 'descripcion' %}col-12{% else %}col-md-6{% endif %}">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                    <div class="form-check mt-4">{{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+                    {% else %}
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                    {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                 </div>
+                {% endfor %}
             </div>
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <button type="submit" class="btn-primary-modern">Guardar</button>
@@ -59,6 +61,7 @@ Productos
                     <th>Código</th>
                     <th>Producto</th>
                     <th>Categoría</th>
+                    <th>Clasificación tributaria</th>
                     <th>Stock</th>
                     <th>Acciones</th>
                 </tr>
@@ -69,14 +72,21 @@ Productos
                     <td>{{ producto.codigo }}</td>
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.categoria.nombre }}</td>
+                    <td>{% if producto.clasificacion_tributaria %}{{ producto.clasificacion_tributaria }}{% else %}<span class="text-muted">Tarifa general</span>{% endif %}</td>
                     <td>{{ producto.stock }}</td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-primary btnEditarProducto"
                             data-id="{{ producto.pk }}"
                             data-codigo="{{ producto.codigo }}"
                             data-nombre="{{ producto.nombre }}"
+                            data-descripcion="{{ producto.descripcion|default_if_none:'' }}"
                             data-categoria="{{ producto.categoria.pk }}"
+                            data-clasificacion-tributaria="{{ producto.clasificacion_tributaria_id|default_if_none:'' }}"
+                            data-costo="{{ producto.costo }}"
+                            data-precio="{{ producto.precio }}"
                             data-stock="{{ producto.stock }}"
+                            data-stock-minimo="{{ producto.stock_minimo }}"
+                            data-estado="{{ producto.estado|yesno:'true,false' }}"
                             data-action="{% url 'editar_producto' producto.pk %}">
                             Editar
                         </button>

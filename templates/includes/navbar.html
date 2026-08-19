@@ -30,23 +30,38 @@
 
         </div>
 
-        <button class="notification">
+        <div class="dropdown">
+            <button class="notification position-relative" data-bs-toggle="dropdown" aria-label="Notificaciones">
+                <i class="bi bi-bell"></i>
+                {% if notificaciones_pendientes %}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ notificaciones_pendientes }}</span>{% endif %}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end p-2 shadow" style="width: min(360px, 90vw)">
+                <div class="d-flex justify-content-between align-items-center px-2 py-1">
+                    <strong>Notificaciones</strong>
+                    {% if notificaciones_pendientes %}<a class="small" href="{% url 'marcar_todas_notificaciones' %}">Marcar todas</a>{% endif %}
+                </div>
+                {% for aviso in notificaciones_sistema %}
+                <a class="dropdown-item text-wrap py-2" href="{% url 'marcar_notificacion_leida' aviso.pk %}">
+                    <strong class="d-block">{{ aviso.titulo }}</strong><small>{{ aviso.mensaje }}</small>
+                </a>
+                {% empty %}<span class="dropdown-item-text text-muted">No hay avisos pendientes.</span>{% endfor %}
+            </div>
+        </div>
 
-            <i class="bi bi-bell"></i>
-
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#telegramQrModal">
+            <i class="bi bi-telegram"></i> Bot
         </button>
 
         <div class="profile">
 
             <img
-                src="https://ui-avatars.com/api/?name=Administrador&background=2563eb&color=fff"
+                src="https://ui-avatars.com/api/?name={{ request.user.get_full_name|default:request.user.username|urlencode }}&background=2563eb&color=fff"
                 alt="Usuario">
 
             <div>
 
-                <strong>Administrador</strong>
-
-                
+                <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                <small class="d-block text-muted">{% if request.user.is_superuser or request.user.perfil.es_administrador %}Administrador{% else %}Usuario{% endif %}</small>
 
             </div>
 
@@ -70,3 +85,15 @@
     </div>
 
 </nav>
+
+<div class="modal fade" id="telegramQrModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title"><i class="bi bi-telegram"></i> Bot de Telegram</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body text-center">
+            <img src="{% url 'telegram_qr' %}" class="img-fluid rounded border" alt="Código QR del bot de Telegram"
+                 onerror="this.style.display='none'; document.getElementById('qrPendiente').classList.remove('d-none');">
+            <div id="qrPendiente" class="alert alert-info d-none">Coloca tu imagen en <code>media/telegram-qr.png</code>.</div>
+            <p class="small text-muted mt-3 mb-0">Escanea el QR, abre el bot e inicia sesión para vincular tus notificaciones.</p>
+        </div>
+    </div></div>
+</div>

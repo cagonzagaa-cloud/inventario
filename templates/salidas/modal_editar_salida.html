@@ -178,40 +178,26 @@
 
 
                         <div class="col-md-6 mb-3">
-
-
-                            <label class="form-label">
-
-                                Estado
-
-                            </label>
-
-
-                            <select
-                                class="form-select"
-                                id="editar_estado"
-                                name="estado">
-
-
-                                <option value="BORRADOR">
-                                    Borrador
-                                </option>
-
-
-                                <option value="CONFIRMADA">
-                                    Confirmada
-                                </option>
-
-
-                                <option value="ANULADA">
-                                    Anulada
-                                </option>
-
-
-                            </select>
-
-
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="editar_operacion_tributaria" name="operacion_tributaria">
+                                <label class="form-check-label" for="editar_operacion_tributaria">Aplicar impuestos (IVA)</label>
+                            </div>
                         </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="editar_actividad_tributaria">Actividad tributaria</label>
+                            <input class="form-control" type="text" id="editar_actividad_tributaria" name="actividad_tributaria">
+                        </div>
+
+                        <div class="col-md-6 mb-3"><div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editar_registro_turismo" name="tiene_registro_turismo">
+                            <label class="form-check-label" for="editar_registro_turismo">Cuenta con registro de turismo</label>
+                        </div></div>
+
+                        <div class="col-md-6 mb-3"><div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editar_licencia_anual" name="tiene_licencia_anual">
+                            <label class="form-check-label" for="editar_licencia_anual">Cuenta con licencia anual</label>
+                        </div></div>
 
 
 

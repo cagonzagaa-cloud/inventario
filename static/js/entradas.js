@@ -68,8 +68,8 @@ $(document).ready(function () {
             $(this).data("tipo")
         );
 
-        $('#id_estado').val(
-            $(this).data("estado")
+        $('#id_operacion_tributaria').prop(
+            'checked', $(this).attr('data-operacion-tributaria') === 'true'
         );
 
         $('#id_observaciones').val(
@@ -102,7 +102,7 @@ $(document).ready(function () {
 
             $('#id_tipo').val("COMPRA");
 
-            $('#id_estado').val("BORRADOR");
+            $('#id_operacion_tributaria').prop('checked', true);
 
             $('#totalEntrada').val("$ 0.00");
 

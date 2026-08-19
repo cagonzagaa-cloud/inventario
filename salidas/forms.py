@@ -2,6 +2,8 @@ from django import forms
 from django.utils import timezone
 
 from .models import Salida, DetalleSalida
+from clientes.models import Cliente
+from productos.models import Producto
 
 
 class SalidaForm(forms.ModelForm):
@@ -15,7 +17,10 @@ class SalidaForm(forms.ModelForm):
             "cliente",
             "numero_documento",
             "tipo",
-            "estado",
+            "operacion_tributaria",
+            "actividad_tributaria",
+            "tiene_registro_turismo",
+            "tiene_licencia_anual",
             "observaciones",
         ]
 
@@ -47,6 +52,14 @@ class SalidaForm(forms.ModelForm):
                 }
             ),
 
+            "operacion_tributaria": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "actividad_tributaria": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Ej: Venta de bienes"
+            }),
+            "tiene_registro_turismo": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "tiene_licencia_anual": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+
             "estado": forms.Select(
                 attrs={
                     "class": "form-select",
@@ -70,6 +83,13 @@ class SalidaForm(forms.ModelForm):
         if not self.instance.pk:
 
             self.fields["fecha"].initial = timezone.now().date()
+
+        self.fields["operacion_tributaria"].label = "Aplicar impuestos (IVA)"
+        self.fields["actividad_tributaria"].label = "Actividad tributaria"
+        self.fields["tiene_registro_turismo"].label = "Cuenta con registro de turismo"
+        self.fields["tiene_licencia_anual"].label = "Cuenta con licencia anual"
+        self.fields["cliente"].queryset = Cliente.objects.filter(estado=True).order_by("apellidos", "nombres")
+        self.fields["cliente"].empty_label = "Seleccione un cliente..."
 
     def clean_numero_documento(self):
 
@@ -96,6 +116,11 @@ class SalidaForm(forms.ModelForm):
 
 class DetalleSalidaForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["producto"].queryset = Producto.objects.filter(estado=True).order_by("nombre")
+        self.fields["producto"].empty_label = "Busque y seleccione un producto..."
+
     class Meta:
 
         model = DetalleSalida
@@ -118,6 +143,7 @@ class DetalleSalidaForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "min": 1,
+                    "value": 1,
                 }
             ),
 
@@ -126,6 +152,7 @@ class DetalleSalidaForm(forms.ModelForm):
                     "class": "form-control",
                     "min": "0.01",
                     "step": "0.01",
+                    "readonly": True,
                 }
             ),
 

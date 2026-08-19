@@ -53,7 +53,7 @@
 
                                 <i class="bi bi-file-earmark-text"></i>
 
-                                Información de la Entrada
+                                Paso 1 de 2 · Datos de la entrada
 
                             </strong>
 
@@ -116,15 +116,11 @@
                             <div class="row">
 
                                 <div class="col-md-6 mb-3">
-
-                                    <label class="form-label">
-
-                                        Estado
-
-                                    </label>
-
-                                    {{ form.estado }}
-
+                                    <div class="form-check mt-4">
+                                        {{ form.operacion_tributaria }}
+                                        <label class="form-check-label" for="{{ form.operacion_tributaria.id_for_label }}">{{ form.operacion_tributaria.label }}</label>
+                                    </div>
+                                    <div class="form-text">{{ form.operacion_tributaria.help_text }}</div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -173,8 +169,7 @@
 
                         <div>
 
-                            Una vez creada la entrada podrá agregar
-                            los productos que ingresarán al inventario.
+                            Al guardar pasarás al paso 2, donde agregarás productos, cantidades y costos antes de confirmar.
 
                         </div>
 

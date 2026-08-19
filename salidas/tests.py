@@ -67,4 +67,9 @@ class DetalleSalidaTipoConversionTest(TestCase):
         self.assertEqual(detalle.base, Decimal("37.50"))
         self.assertEqual(detalle.iva, Decimal("5.63"))
         self.assertEqual(detalle.total_con_iva, Decimal("43.13"))
+        # Un borrador no altera el kardex; el movimiento ocurre al confirmar.
+        self.assertEqual(self.producto.stock, 10)
+        self.salida.confirmar(self.user)
+        self.producto.refresh_from_db()
         self.assertEqual(self.producto.stock, 7)
+        self.assertEqual(self.salida.estado, "CONFIRMADA")

@@ -34,16 +34,16 @@ $(function () {
     $(document).on('click', '.btnEditarProducto', function () {
         const $btn = $(this);
         const action = $btn.data('action');
-        const codigo = $btn.data('codigo');
-        const nombre = $btn.data('nombre');
-        const categoria = $btn.data('categoria');
-        const stock = $btn.data('stock');
-
-        // populate form
-        $('#id_codigo').val(codigo);
-        $('#id_nombre').val(nombre);
-        $('#id_stock').val(stock);
-        $('#id_categoria').val(categoria);
+        $('#id_codigo').val($btn.attr('data-codigo'));
+        $('#id_nombre').val($btn.attr('data-nombre'));
+        $('#id_descripcion').val($btn.attr('data-descripcion'));
+        $('#id_categoria').val($btn.attr('data-categoria'));
+        $('#id_clasificacion_tributaria').val($btn.attr('data-clasificacion-tributaria'));
+        $('#id_costo').val($btn.attr('data-costo').replace(',', '.'));
+        $('#id_precio').val($btn.attr('data-precio').replace(',', '.'));
+        $('#id_stock').val($btn.attr('data-stock'));
+        $('#id_stock_minimo').val($btn.attr('data-stock-minimo'));
+        $('#id_estado').prop('checked', $btn.attr('data-estado') === 'true');
 
         $form.attr('action', action);
         mostrarFormularioProducto();

@@ -58,5 +58,6 @@ urlpatterns = [
         views.obtener_precio_producto,
         name="obtener_precio_producto"
     ),
+    path("confirmar/<int:pk>/", views.confirmar_salida, name="confirmar_salida"),
 
 ]

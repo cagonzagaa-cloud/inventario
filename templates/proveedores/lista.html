@@ -32,37 +32,19 @@ Proveedores
         </div>
         <form id="formProveedor" method="POST" action="{% url 'crear_proveedor' %}" data-create-url="{% url 'crear_proveedor' %}">
             {% csrf_token %}
-            <div class="form-grid">
-                <div class="form-section">
-                    <div>
-                        <label for="id_codigo">Código</label>
-                        {{ form.codigo }}
-                    </div>
-                    <div>
-                        <label for="id_identificacion">Identificación</label>
-                        {{ form.identificacion }}
-                    </div>
-                    <div>
-                        <label for="id_razon_social">Razón social</label>
-                        {{ form.razon_social }}
-                    </div>
-                    <div>
-                        <label for="id_nombre_comercial">Nombre comercial</label>
-                        {{ form.nombre_comercial }}
-                    </div>
-                    <div>
-                        <label for="id_telefono">Teléfono</label>
-                        {{ form.telefono }}
-                    </div>
-                    <div>
-                        <label for="id_correo">Correo</label>
-                        {{ form.correo }}
-                    </div>
-                    <div>
-                        <label for="id_direccion">Dirección</label>
-                        {{ form.direccion }}
-                    </div>
+            {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="row g-3">
+                {% for field in form %}
+                <div class="{% if field.name == 'direccion' or field.name == 'observaciones' %}col-12{% else %}col-md-6{% endif %}">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                    <div class="form-check mt-4">{{ field }} <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+                    {% else %}
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% endif %}
+                    {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
                 </div>
+                {% endfor %}
             </div>
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <button type="submit" class="btn-primary-modern">Guardar</button>
@@ -92,12 +74,25 @@ Proveedores
                         <button type="button" class="btn btn-sm btn-outline-primary btnEditarProveedor"
                             data-id="{{ proveedor.pk }}"
                             data-codigo="{{ proveedor.codigo }}"
+                            data-tipo-identificacion="{{ proveedor.tipo_identificacion }}"
                             data-identificacion="{{ proveedor.identificacion }}"
                             data-razon="{{ proveedor.razon_social }}"
                             data-nombre="{{ proveedor.nombre_comercial }}"
+                            data-contacto="{{ proveedor.contacto }}"
+                            data-cargo="{{ proveedor.cargo }}"
                             data-telefono="{{ proveedor.telefono }}"
+                            data-celular="{{ proveedor.celular }}"
                             data-correo="{{ proveedor.correo }}"
+                            data-sitio-web="{{ proveedor.sitio_web }}"
                             data-direccion="{{ proveedor.direccion }}"
+                            data-provincia="{{ proveedor.provincia }}"
+                            data-canton="{{ proveedor.canton }}"
+                            data-ciudad="{{ proveedor.ciudad }}"
+                            data-codigo-postal="{{ proveedor.codigo_postal }}"
+                            data-condicion-pago="{{ proveedor.condicion_pago }}"
+                            data-cupo-credito="{{ proveedor.cupo_credito }}"
+                            data-observaciones="{{ proveedor.observaciones }}"
+                            data-estado="{{ proveedor.estado|yesno:'true,false' }}"
                             data-action="{% url 'editar_proveedor' proveedor.pk %}">
                             Editar
                         </button>

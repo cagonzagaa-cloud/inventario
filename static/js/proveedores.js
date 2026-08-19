@@ -30,21 +30,14 @@ $(function () {
 	$(document).on('click', '.btnEditarProveedor', function () {
 		const $btn = $(this);
 		const action = $btn.data('action');
-		const codigo = $btn.data('codigo');
-		const identificacion = $btn.data('identificacion');
-		const razon = $btn.data('razon');
-		const nombre = $btn.data('nombre');
-		const telefono = $btn.data('telefono');
-		const correo = $btn.data('correo');
-		const direccion = $btn.data('direccion');
-
-		$('#id_codigo').val(codigo);
-		$('#id_identificacion').val(identificacion);
-		$('#id_razon_social').val(razon);
-		$('#id_nombre_comercial').val(nombre);
-		$('#id_telefono').val(telefono);
-		$('#id_correo').val(correo);
-		$('#id_direccion').val(direccion);
+		const fields = ['codigo', 'tipo-identificacion', 'identificacion', 'razon', 'nombre',
+			'contacto', 'cargo', 'telefono', 'celular', 'correo', 'sitio-web', 'direccion',
+			'provincia', 'canton', 'ciudad', 'codigo-postal', 'condicion-pago', 'cupo-credito', 'observaciones'];
+		const ids = ['codigo', 'tipo_identificacion', 'identificacion', 'razon_social', 'nombre_comercial',
+			'contacto', 'cargo', 'telefono', 'celular', 'correo', 'sitio_web', 'direccion',
+			'provincia', 'canton', 'ciudad', 'codigo_postal', 'condicion_pago', 'cupo_credito', 'observaciones'];
+		fields.forEach((name, index) => $('#id_' + ids[index]).val($btn.attr('data-' + name)));
+		$('#id_estado').prop('checked', $btn.attr('data-estado') === 'true');
 
 		$form.attr('action', action);
 		mostrarFormularioProveedor();

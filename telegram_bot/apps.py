@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+
+
+class TelegramBotConfig(AppConfig):
+    name = 'telegram_bot'
+
+    def ready(self):
+        from . import signals  # noqa: F401

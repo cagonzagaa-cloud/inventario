@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import EntradaForm
+from .forms import EntradaForm, DetalleEntradaForm
 from .models import Entrada, DetalleEntrada
 from productos.models import Producto
 from reportes.utils import registrar_movimiento
@@ -52,10 +52,8 @@ def crear_entrada(request):
 
                 entrada.save()
 
-                messages.success(
-                    request,
-                    "Entrada creada correctamente."
-                )
+                messages.success(request, "Entrada creada correctamente. Ahora agregue los productos.")
+                return redirect("detalle_entrada", pk=entrada.pk)
 
             else:
 
@@ -193,6 +191,8 @@ def detalle_entrada(request, pk):
 
         "productos": productos,
 
+        "form": DetalleEntradaForm(),
+
     }
 
 
@@ -214,49 +214,15 @@ def agregar_detalle_entrada(request, pk):
 
 
     if request.method == "POST":
-
-        producto_id = request.POST.get(
-            "producto"
-        )
-
-        cantidad = request.POST.get(
-            "cantidad"
-        )
-
-        costo = request.POST.get(
-            "costo"
-        )
-
-
-        producto = get_object_or_404(
-            Producto,
-            pk=producto_id
-        )
-
-
-        detalle = DetalleEntrada(
-
-            entrada=entrada,
-
-            producto=producto,
-
-            cantidad=int(cantidad),
-
-            costo=Decimal(costo)
-
-        )
-
-
-        detalle.save()
-
-
-        entrada.actualizar_total()
-
-
-        messages.success(
-            request,
-            "Producto agregado correctamente."
-        )
+        form = DetalleEntradaForm(request.POST)
+        if form.is_valid():
+            detalle = form.save(commit=False)
+            detalle.entrada = entrada
+            detalle.save()
+            messages.success(request, "Producto agregado correctamente.")
+        else:
+            error = " ".join(item for errores in form.errors.values() for item in errores)
+            messages.error(request, f"No se pudo agregar el producto. {error}")
 
 
     return redirect(
@@ -277,45 +243,13 @@ def editar_detalle(request, pk):
 
 
     if request.method == "POST":
-
-        try:
-
-            producto = Producto.objects.get(
-                pk=request.POST.get("producto")
-            )
-
-
-            detalle.producto = producto
-
-
-            detalle.cantidad = int(
-                request.POST.get("cantidad")
-            )
-
-
-            detalle.costo = Decimal(
-                request.POST.get("costo")
-            )
-
-
-            detalle.save()
-
-
-            entrada.actualizar_total()
-
-
-            messages.success(
-                request,
-                "Producto actualizado correctamente."
-            )
-
-
-        except Exception as e:
-
-            messages.error(
-                request,
-                f"Error al actualizar el producto: {e}"
-            )
+        form = DetalleEntradaForm(request.POST, instance=detalle)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Producto actualizado correctamente.")
+        else:
+            error = " ".join(item for errores in form.errors.values() for item in errores)
+            messages.error(request, f"No se pudo actualizar el producto. {error}")
 
 
     return redirect(
@@ -345,57 +279,11 @@ def confirmar_entrada(request, pk):
         )
 
 
-    detalles = entrada.detalles.select_related(
-        "producto"
-    )
-
-
-    if not detalles.exists():
-
-        messages.warning(
-            request,
-            "Debe agregar productos antes de confirmar."
-        )
-
-        return redirect(
-            "detalle_entrada",
-            pk=entrada.id
-        )
-
-
-    for detalle in detalles:
-
-        producto = detalle.producto
-        stock_anterior = producto.stock
-
-        producto.stock += detalle.cantidad
-
-        producto.save(
-            update_fields=[
-                "stock"
-            ]
-        )
-
-        movimiento_usuario = request.user if hasattr(request, 'user') and request.user.is_authenticated else entrada.usuario
-
-        registrar_movimiento(
-            producto=producto,
-            tipo="ENTRADA",
-            cantidad=detalle.cantidad,
-            stock_anterior=stock_anterior,
-            stock_nuevo=producto.stock,
-            usuario=movimiento_usuario,
-            referencia=entrada.codigo,
-        )
-
-    entrada.estado = "CONFIRMADA"
-
-
-    entrada.save(
-        update_fields=[
-            "estado"
-        ]
-    )
+    try:
+        entrada.confirmar(request.user)
+    except Exception as exc:
+        messages.error(request, str(exc))
+        return redirect("detalle_entrada", pk=entrada.id)
 
 
     messages.success(

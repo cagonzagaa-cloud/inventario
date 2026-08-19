@@ -2,6 +2,8 @@ from django import forms
 from django.utils import timezone
 
 from .models import Entrada, DetalleEntrada
+from proveedores.models import Proveedor
+from productos.models import Producto
 
 
 class EntradaForm(forms.ModelForm):
@@ -14,7 +16,7 @@ class EntradaForm(forms.ModelForm):
             "proveedor",
             "numero_documento",
             "tipo",
-            "estado",
+            "operacion_tributaria",
             "observaciones",
         ]
 
@@ -46,6 +48,10 @@ class EntradaForm(forms.ModelForm):
                 }
             ),
 
+            "operacion_tributaria": forms.CheckboxInput(
+                attrs={"class": "form-check-input"}
+            ),
+
             "estado": forms.Select(
                 attrs={
                     "class": "form-select",
@@ -68,6 +74,11 @@ class EntradaForm(forms.ModelForm):
 
         if not self.instance.pk:
             self.fields["fecha"].initial = timezone.now().date()
+
+        self.fields["operacion_tributaria"].label = "Aplicar impuestos (IVA)"
+        self.fields["operacion_tributaria"].help_text = "Desactive únicamente para operaciones no sujetas a impuestos."
+        self.fields["proveedor"].queryset = Proveedor.objects.filter(estado=True).order_by("razon_social")
+        self.fields["proveedor"].empty_label = "Seleccione un proveedor..."
 
     def clean_numero_documento(self):
 
@@ -93,6 +104,11 @@ class EntradaForm(forms.ModelForm):
 
 class DetalleEntradaForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["producto"].queryset = Producto.objects.filter(estado=True).order_by("nombre")
+        self.fields["producto"].empty_label = "Busque y seleccione un producto..."
+
     class Meta:
         model = DetalleEntrada
 
@@ -114,6 +130,7 @@ class DetalleEntradaForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "min": 1,
+                    "value": 1,
                 }
             ),
 

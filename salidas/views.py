@@ -56,10 +56,8 @@ def crear_salida(request):
 
             salida.save()
 
-            messages.success(
-                request,
-                "Salida creada correctamente."
-            )
+            messages.success(request, "Salida creada correctamente. Ahora agregue los productos.")
+            return redirect("detalle_salida", pk=salida.pk)
 
         else:
 
@@ -202,27 +200,15 @@ def agregar_detalle_salida(request, pk):
     )
 
     if request.method == "POST":
-
-        producto_id = request.POST.get("producto")
-        cantidad = int(request.POST.get("cantidad", 0) or 0)
-        precio = Decimal(str(request.POST.get("precio") or "0"))
-
-        producto = get_object_or_404(
-            Producto,
-            id=producto_id
-        )
-
-        DetalleSalida.objects.create(
-            salida=salida,
-            producto=producto,
-            cantidad=cantidad,
-            precio=precio,
-        )
-
-        messages.success(
-            request,
-            "Producto agregado correctamente"
-        )
+        form = DetalleSalidaForm(request.POST)
+        if form.is_valid():
+            detalle = form.save(commit=False)
+            detalle.salida = salida
+            detalle.save()
+            messages.success(request, "Producto agregado correctamente.")
+        else:
+            error = " ".join(item for errores in form.errors.values() for item in errores)
+            messages.error(request, f"No se pudo agregar el producto. {error}")
 
         return redirect(
             "detalle_salida",
@@ -312,3 +298,14 @@ def obtener_precio_producto(request, pk):
         "stock": producto.stock
 
     })
+
+
+@login_required
+def confirmar_salida(request, pk):
+    salida = get_object_or_404(Salida, pk=pk)
+    try:
+        salida.confirmar(request.user)
+        messages.success(request, "Salida confirmada correctamente.")
+    except Exception as exc:
+        messages.error(request, str(exc))
+    return redirect("detalle_salida", pk=salida.pk)

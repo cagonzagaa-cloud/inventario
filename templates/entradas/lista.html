@@ -88,6 +88,8 @@ Entradas
 
                         <th>Tipo</th>
 
+                        <th>Razón tributaria</th>
+
                         <th>Estado</th>
 
                         <th>Total</th>
@@ -139,6 +141,8 @@ Entradas
                         <td>
                             {{ entrada.get_tipo_display }}
                         </td>
+
+                        <td>{% if entrada.operacion_tributaria %}<span class="badge bg-info text-dark">Aplica IVA</span>{% else %}<span class="badge bg-secondary">No sujeto</span>{% endif %}</td>
 
 
 
@@ -210,6 +214,7 @@ Entradas
                                 data-documento="{{ entrada.numero_documento }}"
                                 data-tipo="{{ entrada.tipo }}"
                                 data-estado="{{ entrada.estado }}"
+                                data-operacion-tributaria="{{ entrada.operacion_tributaria|yesno:'true,false' }}"
                                 data-observaciones="{{ entrada.observaciones|default_if_none:'' }}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#entradaModal">

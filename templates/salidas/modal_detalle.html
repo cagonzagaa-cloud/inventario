@@ -58,35 +58,8 @@
 
 
 
-                            <select
-                                class="form-select"
-                                id="id_producto"
-                                name="producto"
-                                required>
-
-
-                                <option value="">
-
-                                    Seleccione producto
-
-                                </option>
-
-
-                                {% for producto in productos %}
-
-
-                                <option value="{{ producto.id }}">
-
-                                    {{ producto.codigo }} -
-                                    {{ producto.nombre }}
-
-                                </option>
-
-
-                                {% endfor %}
-
-
-                            </select>
+                            {{ form.producto }}
+                            <div class="form-text">Al seleccionar se mostrará automáticamente el precio y el stock disponible.</div>
 
 
                         </div>
@@ -104,14 +77,7 @@
                             </label>
 
 
-                            <input
-                                type="number"
-                                class="form-control"
-                                id="id_cantidad"
-                                name="cantidad"
-                                min="1"
-                                value="1"
-                                required>
+                            {{ form.cantidad }}
 
 
                         </div>
@@ -130,13 +96,7 @@
 
 
 
-                            <input
-                                type="number"
-                                class="form-control"
-                                id="id_precio"
-                                name="precio"
-                                step="0.01"
-                                readonly>
+                            {{ form.precio }}
 
 
                         </div>

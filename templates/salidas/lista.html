@@ -66,6 +66,8 @@ Salidas
 
                         <th>Tipo</th>
 
+                        <th>Razón tributaria</th>
+
                         <th>Total</th>
 
                         <th>Estado</th>
@@ -118,6 +120,8 @@ Salidas
                         <td>
                             {{ salida.get_tipo_display }}
                         </td>
+
+                        <td>{% if salida.operacion_tributaria %}{{ salida.actividad_tributaria|default:"Aplica IVA" }}{% else %}<span class="badge bg-secondary">No sujeto</span>{% endif %}</td>
 
 
 
@@ -187,6 +191,11 @@ Salidas
         data-tipo="{{ salida.tipo }}"
 
         data-estado="{{ salida.estado }}"
+
+        data-operacion-tributaria="{{ salida.operacion_tributaria|yesno:'true,false' }}"
+        data-actividad-tributaria="{{ salida.actividad_tributaria }}"
+        data-registro-turismo="{{ salida.tiene_registro_turismo|yesno:'true,false' }}"
+        data-licencia-anual="{{ salida.tiene_licencia_anual|yesno:'true,false' }}"
 
         data-observaciones="{{ salida.observaciones|default:'' }}"
 
