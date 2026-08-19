@@ -81,6 +81,7 @@ class RolUsuarioTest(TestCase):
                 "password1": "123",
                 "password2": "123",
                 "rol": PerfilUsuario.Rol.USUARIO,
+                "is_active": "on",
             },
         )
 
@@ -101,6 +102,7 @@ class RolUsuarioTest(TestCase):
                 "password1": "123456",
                 "password2": "123456",
                 "rol": PerfilUsuario.Rol.USUARIO,
+                "is_active": "on",
             },
             follow=True,
         )
@@ -108,6 +110,23 @@ class RolUsuarioTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "usuario_nuevo")
         self.assertTrue(get_user_model().objects.filter(username="usuario_nuevo").exists())
+        self.assertTrue(get_user_model().objects.get(username="usuario_nuevo").is_active)
+
+    def test_admin_puede_cambiar_estado_desde_edicion(self):
+        self.client.login(username="admin", password="12345678")
+        response = self.client.post(reverse("editar_usuario", args=[self.user.pk]), {
+            "username": self.user.username,
+            "first_name": "Usuario",
+            "last_name": "Prueba",
+            "email": "usuario@example.com",
+            "password1": "",
+            "password2": "",
+            "rol": PerfilUsuario.Rol.USUARIO,
+            # Checkbox omitido: se guarda como inactivo.
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
 
     def test_eliminar_usuario_lo_desactiva_y_conserva_el_registro(self):
         self.client.login(username="admin", password="12345678")

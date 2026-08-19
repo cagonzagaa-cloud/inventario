@@ -41,6 +41,12 @@
                     <label class="form-label" for="id_rol">Rol</label>
                     {{ form.rol }}
                 </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check form-switch mb-2">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Usuario activo</label>
+                    </div>
+                </div>
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">

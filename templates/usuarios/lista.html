@@ -63,6 +63,12 @@
                     {{ form.rol }}
                     {% if form.rol.errors %}<div class="text-danger small mt-1">{{ form.rol.errors }}</div>{% endif %}
                 </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check form-switch mb-2">
+                        {{ form.is_active }}
+                        <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Usuario activo</label>
+                    </div>
+                </div>
             </div>
             <div class="d-flex justify-content-end mt-3">
                 <button type="submit" class="btn btn-primary">

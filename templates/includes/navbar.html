@@ -20,16 +20,6 @@
 
     <div class="right-navbar">
 
-        <div class="search-box">
-
-            <i class="bi bi-search"></i>
-
-            <input
-                type="text"
-                placeholder="Buscar...">
-
-        </div>
-
         {% if request.user.is_superuser or request.user.perfil.es_administrador %}
         <div class="dropdown">
             <button class="notification position-relative" data-bs-toggle="dropdown" aria-label="Notificaciones">

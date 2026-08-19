@@ -66,6 +66,12 @@ class UsuarioForm(forms.Form):
         label="Rol",
         widget=forms.Select(attrs={"class": "form-select"})
     )
+    is_active = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Usuario activo",
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
 
     def clean_username(self):
         username = self.cleaned_data["username"].strip()
@@ -85,6 +91,7 @@ class UsuarioForm(forms.Form):
             self.fields["last_name"].initial = instance.last_name
             self.fields["email"].initial = instance.email
             self.fields["rol"].initial = instance.perfil.rol
+            self.fields["is_active"].initial = instance.is_active
 
     def clean(self):
         cleaned_data = super().clean()
@@ -119,6 +126,7 @@ class UsuarioForm(forms.Form):
         user.first_name = self.cleaned_data.get("first_name") or ""
         user.last_name = self.cleaned_data.get("last_name") or ""
         user.email = self.cleaned_data.get("email") or ""
+        user.is_active = self.cleaned_data.get("is_active", False)
 
         if self.cleaned_data.get("password1"):
             user.set_password(self.cleaned_data["password1"])
