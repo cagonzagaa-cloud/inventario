@@ -11,3 +11,27 @@ services:
         generateValue: true
       - key: DEBUG
         value: "False"
+  - type: worker
+    name: inventario-telegram-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python telegram_bot.py
+    envVars:
+      - key: FORCE_SQLITE
+        value: "False"
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DATABASE_HOST
+        sync: false
+      - key: DATABASE_NAME
+        sync: false
+      - key: DATABASE_USER
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: DATABASE_PORT
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false

@@ -23,8 +23,6 @@ django.setup()
 
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
-from django.db import transaction
-from django.utils import timezone
 
 
 # ============================================================
@@ -33,11 +31,10 @@ from django.utils import timezone
 
 from usuarios.models import PerfilUsuario
 from productos.models import Producto
-from entradas.models import Entrada, DetalleEntrada
 from proveedores.models import Proveedor
 from clientes.models import Cliente
-from salidas.models import Salida, DetalleSalida
 from telegram_bot.models import SuscripcionTelegram
+from telegram_bot.services import registrar_entrada_desde_bot, registrar_salida_desde_bot
 
 
 User = get_user_model()
@@ -411,10 +408,16 @@ async def procesar_login(
             usuario
         )
 
-        es_admin = False
+        es_admin = usuario.is_superuser or bool(perfil and perfil.es_administrador)
 
-        if perfil:
-            es_admin = perfil.es_administrador
+        if not es_admin:
+            context.user_data.clear()
+            await update.message.reply_text(
+                "🚫 *ACCESO DENEGADO*\n\nEl bot está disponible únicamente para administradores.",
+                parse_mode="Markdown",
+                reply_markup=menu_login(),
+            )
+            return
 
 
         # ----------------------------------------------------
@@ -1313,97 +1316,9 @@ def crear_entrada(
     costo
 ):
 
-    with transaction.atomic():
-
-        usuario = User.objects.get(
-            id=usuario_id
-        )
-
-        proveedor = Proveedor.objects.get(
-            id=proveedor_id
-        )
-
-        producto = (
-            Producto.objects
-            .select_for_update()
-            .get(
-                id=producto_id,
-                estado=True
-            )
-        )
-
-
-        stock_anterior = producto.stock
-
-
-        # ----------------------------------------------------
-        # CREAR ENTRADA
-        # ----------------------------------------------------
-
-        entrada = Entrada.objects.create(
-
-            proveedor=proveedor,
-
-            fecha=timezone.localdate(),
-
-            tipo="COMPRA",
-
-            estado="BORRADOR",
-
-            usuario=usuario
-
-        )
-
-
-        # ----------------------------------------------------
-        # CREAR DETALLE
-        # ----------------------------------------------------
-
-        DetalleEntrada.objects.create(
-
-            entrada=entrada,
-
-            producto=producto,
-
-            cantidad=cantidad,
-
-            costo=costo
-
-        )
-
-
-        # ----------------------------------------------------
-        # ACTUALIZAR STOCK
-        # ----------------------------------------------------
-
-        producto.stock += cantidad
-
-        producto.save(
-            update_fields=["stock"]
-        )
-
-
-        # ----------------------------------------------------
-        # CONFIRMAR
-        # ----------------------------------------------------
-
-        entrada.estado = "CONFIRMADA"
-
-        entrada.save(
-            update_fields=["estado"]
-        )
-
-
-        entrada.refresh_from_db()
-
-        producto.refresh_from_db()
-
-
-        return (
-            entrada,
-            producto,
-            stock_anterior
-        )
+    return registrar_entrada_desde_bot(
+        usuario_id, proveedor_id, producto_id, cantidad, costo
+    )
 
 
 # ============================================================
@@ -1613,17 +1528,9 @@ async def seleccionar_producto_salida(query, context, producto_id):
 
 
 @sync_to_async
-@transaction.atomic
 def crear_salida_bot(usuario_id, cliente_id, producto_id, cantidad):
-    usuario = User.objects.get(pk=usuario_id)
-    producto = Producto.objects.select_for_update().get(pk=producto_id)
-    if cantidad <= 0 or cantidad > producto.stock:
-        raise ValueError(f"Cantidad inválida. Stock disponible: {producto.stock}.")
-    salida = Salida.objects.create(cliente_id=cliente_id, fecha=timezone.now().date(), tipo="VENTA", usuario=usuario)
-    DetalleSalida.objects.create(salida=salida, producto=producto, cantidad=cantidad, precio=producto.precio)
-    salida.confirmar(usuario)
+    salida = registrar_salida_desde_bot(usuario_id, cliente_id, producto_id, cantidad)
     return salida.codigo, salida.total
-
 
 async def procesar_cantidad_salida(update, context):
     try:

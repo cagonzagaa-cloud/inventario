@@ -15,5 +15,6 @@ urlpatterns = [
         views.api_ultimos_movimientos,
         name="api_ultimos_movimientos"
     ),
+    path("kardex/exportar-excel/", views.exportar_kardex_excel, name="exportar_kardex_excel"),
 
 ]
