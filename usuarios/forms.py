@@ -67,6 +67,15 @@ class UsuarioForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-select"})
     )
 
+    def clean_username(self):
+        username = self.cleaned_data["username"].strip()
+        existentes = get_user_model().objects.filter(username__iexact=username)
+        if self.instance:
+            existentes = existentes.exclude(pk=self.instance.pk)
+        if existentes.exists():
+            raise forms.ValidationError("Ya existe un usuario con este nombre.")
+        return username
+
     def __init__(self, *args, instance=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.instance = instance

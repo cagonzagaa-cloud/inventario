@@ -2,12 +2,13 @@ from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 
 from productos.models import Producto
 
-from .forms import SalidaForm, DetalleSalidaForm
+from .forms import SalidaForm, DetalleSalidaForm, DetalleSalidaFormSet
 from .models import Salida, DetalleSalida
 
 
@@ -24,10 +25,12 @@ def lista_salidas(request):
     ).order_by("-id")
 
     form = SalidaForm()
+    formset = DetalleSalidaFormSet(prefix="detalles")
 
     contexto = {
         "salidas": salidas,
         "form": form,
+        "formset": formset,
     }
 
     return render(
@@ -47,16 +50,26 @@ def crear_salida(request):
     if request.method == "POST":
 
         form = SalidaForm(request.POST)
+        formset = DetalleSalidaFormSet(request.POST, prefix="detalles")
 
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
 
-            salida = form.save(commit=False)
-
-            salida.usuario = request.user
-
-            salida.save()
-
-            messages.success(request, "Salida creada correctamente. Ahora agregue los productos.")
+            try:
+                with transaction.atomic():
+                    salida = form.save(commit=False)
+                    salida.usuario = request.user
+                    salida.save()
+                    formset.instance = salida
+                    formset.save()
+                    salida.confirmar(request.user)
+            except Exception as exc:
+                messages.error(request, str(exc))
+                salidas = Salida.objects.select_related("cliente", "usuario").order_by("-id")
+                return render(request, "salidas/lista.html", {
+                    "salidas": salidas, "form": form, "formset": formset,
+                    "abrir_formulario": True,
+                }, status=400)
+            messages.success(request, "Salida guardada y confirmada correctamente.")
             return redirect("detalle_salida", pk=salida.pk)
 
         else:
@@ -66,9 +79,13 @@ def crear_salida(request):
                 "Verifique la información ingresada."
             )
 
-    return redirect(
-        "lista_salidas"
-    )
+    if request.method == "POST" and not (form.is_valid() and formset.is_valid()):
+        salidas = Salida.objects.select_related("cliente", "usuario").order_by("-id")
+        return render(request, "salidas/lista.html", {
+            "salidas": salidas, "form": form, "formset": formset,
+            "abrir_formulario": True,
+        }, status=400)
+    return redirect("lista_salidas")
 
 
 # =====================================================
@@ -123,6 +140,9 @@ def eliminar_salida(request, pk):
         pk=pk
     )
 
+    if salida.estado != "BORRADOR":
+        messages.warning(request, "Una salida procesada no puede eliminarse. Use la opción Anular.")
+        return redirect("lista_salidas")
     salida.delete()
 
     messages.success(
@@ -138,6 +158,20 @@ def eliminar_salida(request, pk):
 # =====================================================
 # DETALLE DE SALIDA
 # =====================================================
+
+@login_required
+def anular_salida(request, pk):
+    salida = get_object_or_404(Salida, pk=pk)
+    if request.method != "POST":
+        messages.warning(request, "La anulación debe confirmarse desde el listado.")
+        return redirect("lista_salidas")
+    try:
+        salida.anular(request.user)
+        messages.success(request, "Salida anulada y stock revertido correctamente.")
+    except Exception as exc:
+        messages.error(request, str(exc))
+    return redirect("lista_salidas")
+
 
 @login_required
 def detalle_salida(request, pk):

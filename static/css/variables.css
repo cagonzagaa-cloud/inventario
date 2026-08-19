@@ -1,9 +1,9 @@
 :root{
 
-    --primary:#4f46e5;
-    --primary-dark:#3730a3;
-    --primary-soft:#eef2ff;
-    --secondary:#06b6d4;
+    --primary:#2563eb;
+    --primary-dark:#1e3a8a;
+    --primary-soft:#eff6ff;
+    --secondary:#0f766e;
     --sidebar:#111827;
     --sidebar-soft:#1f2937;
     --background:#f3f6fb;
@@ -21,7 +21,7 @@
     --warning-soft:#fffbeb;
     --shadow:0 20px 45px rgba(15,23,42,0.08);
     --shadow-soft:0 12px 28px rgba(79,70,229,0.14);
-    --radius:22px;
+    --radius:20px;
     --transition:.25s ease;
 
 }

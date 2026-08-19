@@ -2,6 +2,7 @@ import os
 
 import requests
 from django.db import transaction
+from django.db.models import Q
 
 from .models import Notificacion, SuscripcionTelegram
 
@@ -12,7 +13,10 @@ def enviar_telegram(texto):
         return False
 
     enviado = False
-    for chat_id in SuscripcionTelegram.objects.filter(activo=True).values_list("chat_id", flat=True):
+    suscripciones = SuscripcionTelegram.objects.filter(activo=True).filter(
+        Q(usuario__is_superuser=True) | Q(usuario__perfil__rol="ADMIN")
+    ).distinct()
+    for chat_id in suscripciones.values_list("chat_id", flat=True):
         try:
             response = requests.post(
                 f"https://api.telegram.org/bot{token}/sendMessage",

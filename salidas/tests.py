@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 
 from categorias.models import Categoria
 from clientes.models import Cliente
@@ -73,3 +74,26 @@ class DetalleSalidaTipoConversionTest(TestCase):
         self.producto.refresh_from_db()
         self.assertEqual(self.producto.stock, 7)
         self.assertEqual(self.salida.estado, "CONFIRMADA")
+
+    def test_formulario_unico_crea_detalle_confirma_y_descuenta_stock(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("crear_salida"), {
+            "fecha": date.today().isoformat(), "cliente": self.cliente.pk,
+            "tipo": "VENTA", "operacion_tributaria": "on",
+            "detalles-TOTAL_FORMS": "1", "detalles-INITIAL_FORMS": "0",
+            "detalles-MIN_NUM_FORMS": "1", "detalles-MAX_NUM_FORMS": "1000",
+            "detalles-0-producto": self.producto.pk,
+            "detalles-0-cantidad": "3", "detalles-0-precio": "12.50",
+        })
+        self.assertEqual(response.status_code, 302)
+        nueva = Salida.objects.exclude(pk=self.salida.pk).get()
+        self.assertEqual(nueva.estado, "CONFIRMADA")
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 7)
+
+    def test_eliminar_salida_confirmada_no_genera_error_500(self):
+        Salida.objects.filter(pk=self.salida.pk).update(estado="CONFIRMADA")
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("eliminar_salida", args=[self.salida.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Salida.objects.filter(pk=self.salida.pk).exists())

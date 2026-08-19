@@ -176,6 +176,7 @@ Salidas
                         </a>
 
 
+    {% if salida.estado == "BORRADOR" %}
     <!-- EDITAR -->
     <button
         class="btn btn-warning btn-sm btnEditarSalida"
@@ -210,9 +211,6 @@ Salidas
 
 
     </button>
-
-
-
     <!-- ELIMINAR -->
     <button
         class="btn btn-danger btn-sm btnEliminarSalida"
@@ -232,6 +230,11 @@ Salidas
 
 
     </button>
+    {% elif salida.estado == "CONFIRMADA" %}
+    <form method="post" action="{% url 'anular_salida' salida.id %}" class="d-inline" onsubmit="return confirm('¿Anular esta salida y revertir su stock?');">{% csrf_token %}
+        <button class="btn btn-outline-danger btn-sm" title="Anular salida"><i class="bi bi-x-circle"></i></button>
+    </form>
+    {% endif %}
 
 
 </td>
@@ -276,7 +279,7 @@ Salidas
 
 </div>
 
-{% include "salidas/modal_salida.html" %}
+{% include "salidas/formulario_unico.html" %}
 
 {% include "salidas/modal_editar_salida.html" %}
 

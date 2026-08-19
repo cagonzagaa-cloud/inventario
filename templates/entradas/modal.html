@@ -40,6 +40,14 @@
                 {% csrf_token %}
 
                 <div class="modal-body">
+                    {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>No se pudo guardar la entrada.</strong>
+                        <ul class="mb-0 mt-2">{% for field in form %}{% for error in field.errors %}
+                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                        {% endfor %}{% endfor %}</ul>
+                    </div>
+                    {% endif %}
 
                     <!-- =============================== -->
                     <!-- INFORMACIÓN GENERAL -->
@@ -212,3 +220,8 @@
     </div>
 
 </div>
+{% if abrir_formulario %}
+<script>document.addEventListener('DOMContentLoaded', function () {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('entradaModal')).show();
+});</script>
+{% endif %}

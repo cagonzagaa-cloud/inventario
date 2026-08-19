@@ -108,3 +108,25 @@ class RolUsuarioTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "usuario_nuevo")
         self.assertTrue(get_user_model().objects.filter(username="usuario_nuevo").exists())
+
+    def test_eliminar_usuario_lo_desactiva_y_conserva_el_registro(self):
+        self.client.login(username="admin", password="12345678")
+        response = self.client.post(reverse("eliminar_usuario", args=[self.user.pk]), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+        self.assertTrue(get_user_model().objects.filter(pk=self.user.pk).exists())
+
+    def test_login_se_bloquea_despues_de_cinco_intentos_fallidos(self):
+        self.client.logout()
+        for intento in range(1, 6):
+            response = self.client.post(reverse("login"), {
+                "username": "usuario", "password": "incorrecta",
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "máximo de 5 intentos")
+        response = self.client.post(reverse("login"), {
+            "username": "usuario", "password": "12345678",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Demasiados intentos fallidos")

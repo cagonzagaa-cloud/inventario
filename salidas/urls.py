@@ -32,6 +32,8 @@ urlpatterns = [
     ),
 
 
+    path("anular/<int:pk>/", views.anular_salida, name="anular_salida"),
+
     path(
         "detalle/<int:pk>/",
         views.detalle_salida,

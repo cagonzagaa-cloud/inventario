@@ -91,3 +91,27 @@ class DetalleEntradaIvaTest(TestCase):
         movimiento = MovimientoInventario.objects.filter(producto=self.producto, tipo="ENTRADA").first()
         self.assertIsNotNone(movimiento)
         self.assertEqual(movimiento.cantidad, 4)
+
+    def test_formulario_unico_crea_detalle_confirma_y_actualiza_stock(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("crear_entrada"), {
+            "fecha": date.today().isoformat(), "proveedor": self.proveedor.pk,
+            "tipo": "COMPRA", "operacion_tributaria": "on",
+            "detalles-TOTAL_FORMS": "1", "detalles-INITIAL_FORMS": "0",
+            "detalles-MIN_NUM_FORMS": "1", "detalles-MAX_NUM_FORMS": "1000",
+            "detalles-0-producto": self.producto.pk,
+            "detalles-0-cantidad": "2", "detalles-0-costo": "10.00",
+        })
+        self.assertEqual(response.status_code, 302)
+        nueva = Entrada.objects.exclude(pk=self.entrada.pk).get()
+        self.assertEqual(nueva.estado, "CONFIRMADA")
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 2)
+
+    def test_eliminar_entrada_confirmada_no_genera_error_500(self):
+        self.entrada.estado = "CONFIRMADA"
+        Entrada.objects.filter(pk=self.entrada.pk).update(estado="CONFIRMADA")
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("eliminar_entrada", args=[self.entrada.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Entrada.objects.filter(pk=self.entrada.pk).exists())

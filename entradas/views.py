@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import EntradaForm, DetalleEntradaForm
+from .forms import EntradaForm, DetalleEntradaForm, DetalleEntradaFormSet
 from .models import Entrada, DetalleEntrada
 from productos.models import Producto
 from reportes.utils import registrar_movimiento
@@ -21,12 +21,14 @@ def lista_entradas(request):
     ).order_by("-id")
 
     form = EntradaForm()
+    formset = DetalleEntradaFormSet(prefix="detalles")
 
     contexto = {
 
         "entradas": entradas,
 
         "form": form,
+        "formset": formset,
 
     }
 
@@ -43,16 +45,26 @@ def crear_entrada(request):
         if request.method == "POST":
 
             form = EntradaForm(request.POST)
+            formset = DetalleEntradaFormSet(request.POST, prefix="detalles")
 
-            if form.is_valid():
+            if form.is_valid() and formset.is_valid():
 
-                entrada = form.save(commit=False)
-
-                entrada.usuario = request.user
-
-                entrada.save()
-
-                messages.success(request, "Entrada creada correctamente. Ahora agregue los productos.")
+                try:
+                    with transaction.atomic():
+                        entrada = form.save(commit=False)
+                        entrada.usuario = request.user
+                        entrada.save()
+                        formset.instance = entrada
+                        formset.save()
+                        entrada.confirmar(request.user)
+                except Exception as exc:
+                    messages.error(request, str(exc))
+                    entradas = Entrada.objects.select_related("proveedor", "usuario").order_by("-id")
+                    return render(request, "entradas/lista.html", {
+                        "entradas": entradas, "form": form, "formset": formset,
+                        "abrir_formulario": True,
+                    }, status=400)
+                messages.success(request, "Entrada guardada y confirmada correctamente.")
                 return redirect("detalle_entrada", pk=entrada.pk)
 
             else:
@@ -62,6 +74,12 @@ def crear_entrada(request):
                     "Verifique la información ingresada."
                 )
 
+        if request.method == "POST" and not (form.is_valid() and formset.is_valid()):
+            entradas = Entrada.objects.select_related("proveedor", "usuario").order_by("-id")
+            return render(request, "entradas/lista.html", {
+                "entradas": entradas, "form": form, "formset": formset,
+                "abrir_formulario": True,
+            }, status=400)
         return redirect("lista_entradas")
 
 
@@ -142,6 +160,9 @@ def eliminar_entrada(request, pk):
         pk=pk
     )
 
+    if entrada.estado != "BORRADOR":
+        messages.warning(request, "Una entrada procesada no puede eliminarse. Use la opción Anular.")
+        return redirect("lista_entradas")
     entrada.delete()
 
     messages.success(
@@ -153,6 +174,20 @@ def eliminar_entrada(request, pk):
         "lista_entradas"
     )
 
+
+
+@login_required
+def anular_entrada(request, pk):
+    entrada = get_object_or_404(Entrada, pk=pk)
+    if request.method != "POST":
+        messages.warning(request, "La anulación debe confirmarse desde el listado.")
+        return redirect("lista_entradas")
+    try:
+        entrada.anular(request.user)
+        messages.success(request, "Entrada anulada y stock revertido correctamente.")
+    except Exception as exc:
+        messages.error(request, str(exc))
+    return redirect("lista_entradas")
 
 
 @login_required

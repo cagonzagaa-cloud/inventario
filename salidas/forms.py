@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import inlineformset_factory
 from django.utils import timezone
 
 from .models import Salida, DetalleSalida
@@ -185,3 +186,14 @@ class DetalleSalidaForm(forms.ModelForm):
             )
 
         return precio
+
+
+DetalleSalidaFormSet = inlineformset_factory(
+    Salida,
+    DetalleSalida,
+    form=DetalleSalidaForm,
+    extra=1,
+    can_delete=True,
+    min_num=1,
+    validate_min=True,
+)

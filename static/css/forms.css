@@ -1,0 +1,48 @@
+/* Lenguaje visual global: superficies limpias, controles consistentes y foco accesible. */
+body { min-height: 100vh; }
+
+.content > .container-fluid,
+.content > .container,
+.content > .card,
+.content > .d-flex { max-width: 1480px; margin-left: auto; margin-right: auto; }
+
+.card {
+  border: 1px solid rgba(148, 163, 184, .16) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 14px 40px rgba(15, 23, 42, .07) !important;
+}
+.card-header { background: transparent; border-bottom: 1px solid var(--border); padding: 1.1rem 1.35rem; }
+.card-body { padding: 1.35rem; }
+
+.btn { border-radius: 11px; font-weight: 600; padding: .65rem 1rem; transition: transform .2s ease, box-shadow .2s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { border: 0; background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 9px 20px rgba(79, 70, 229, .2); }
+.btn-secondary, .btn-light { border-color: var(--border); background: #f8fafc; color: #334155; }
+.btn-danger { border: 0; background: var(--danger); }
+.btn-warning { border: 0; background: var(--warning); color: #fff; }
+.btn-sm { padding: .48rem .65rem; border-radius: 9px; }
+
+.modal-content { border-radius: 24px !important; overflow: hidden; box-shadow: 0 30px 80px rgba(15, 23, 42, .22); }
+.modal-header { padding: 1.35rem 1.5rem; background: linear-gradient(135deg, #f8fafc, #eef2ff); border-bottom: 1px solid var(--border); }
+.modal-body { padding: 1.5rem; background: #f8fafc; }
+.modal-footer { padding: 1rem 1.5rem; background: #fff; border-top: 1px solid var(--border); }
+
+.line-items { display: grid; gap: 12px; }
+.line-item { margin: 0; padding: 15px; background: #fff; border: 1px solid var(--border); border-radius: 15px; }
+.errorlist { list-style: none; color: var(--danger); font-size: .78rem; margin: .35rem 0 0; padding: 0; }
+.form-text { color: var(--text-light); }
+
+.table-responsive { border-radius: 14px; }
+.table > :not(caption) > * > * { background: transparent; }
+.table tbody tr { transition: background .18s ease; }
+
+.alert { border: 0; border-radius: 14px; }
+.dropdown-menu { border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+
+@media (max-width: 767px) {
+  .modal-body { padding: 1rem; }
+  .form-section { padding: 15px; }
+  .card-body { padding: 1rem; }
+  .right-navbar { gap: 8px; }
+}

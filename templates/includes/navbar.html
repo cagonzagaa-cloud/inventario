@@ -30,6 +30,7 @@
 
         </div>
 
+        {% if request.user.is_superuser or request.user.perfil.es_administrador %}
         <div class="dropdown">
             <button class="notification position-relative" data-bs-toggle="dropdown" aria-label="Notificaciones">
                 <i class="bi bi-bell"></i>
@@ -51,6 +52,7 @@
         <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#telegramQrModal">
             <i class="bi bi-telegram"></i> Bot
         </button>
+        {% endif %}
 
         <div class="profile">
 
@@ -86,6 +88,7 @@
 
 </nav>
 
+{% if request.user.is_superuser or request.user.perfil.es_administrador %}
 <div class="modal fade" id="telegramQrModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content">
         <div class="modal-header"><h5 class="modal-title"><i class="bi bi-telegram"></i> Bot de Telegram</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
@@ -97,3 +100,4 @@
         </div>
     </div></div>
 </div>
+{% endif %}

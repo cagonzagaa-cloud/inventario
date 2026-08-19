@@ -113,9 +113,9 @@
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             {% if usuario != request.user %}
-                            <a href="{% url 'eliminar_usuario' usuario.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Desea eliminar este usuario?');">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            {% if usuario.is_active %}<form method="post" action="{% url 'eliminar_usuario' usuario.id %}" class="d-inline" onsubmit="return confirm('¿Desea desactivar este usuario? Su historial se conservará.');">{% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" title="Desactivar usuario"><i class="bi bi-person-x"></i></button>
+                            </form>{% endif %}
                             {% endif %}
                         </td>
                     </tr>

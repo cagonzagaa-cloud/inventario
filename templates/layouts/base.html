@@ -104,9 +104,9 @@
 
         Swal.fire({
 
-            icon: 'success',
+            icon: '{% if message.tags == "error" %}error{% elif message.tags == "warning" %}warning{% else %}success{% endif %}',
 
-            title: 'Operación realizada',
+            title: '{% if message.tags == "error" %}No se pudo completar{% elif message.tags == "warning" %}Atención{% else %}Operación realizada{% endif %}',
 
             text: '{{ message }}',
 
@@ -123,5 +123,4 @@
 {% endif %}
 
 </body>
-    </body>
 </html>
