@@ -9,6 +9,10 @@ from asgiref.sync import sync_to_async
 # CONFIGURACIÓN DE DJANGO
 # ============================================================
 
+# The bot must use the shared Supabase database even when the local web app
+# opts into SQLite through FORCE_SQLITE=True.
+os.environ["FORCE_SQLITE"] = "False"
+
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE",
     "config.settings"
