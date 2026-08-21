@@ -93,13 +93,14 @@ def api_ultimos_movimientos(request):
 
     data = []
     for m in movimientos:
+        fecha_local = timezone.localtime(m.fecha)
         data.append({
             'id': m.pk,
             'producto': m.producto.nombre,
             'producto_id': m.producto.pk,
             'tipo': m.tipo,
             'cantidad': m.cantidad,
-            'fecha': m.fecha.strftime('%d/%m/%Y %H:%M'),
+            'fecha': fecha_local.strftime('%d/%m/%Y %H:%M'),
             'referencia': m.referencia,
             'detail_url': m.get_detail_url(),
             'stock_anterior': m.stock_anterior,

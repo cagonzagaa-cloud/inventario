@@ -74,7 +74,7 @@ class EntradaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if not self.instance.pk:
-            self.fields["fecha"].initial = timezone.now().date()
+            self.fields["fecha"].initial = timezone.localdate()
 
         self.fields["operacion_tributaria"].label = "Aplicar impuestos (IVA)"
         self.fields["operacion_tributaria"].help_text = "Desactive únicamente para operaciones no sujetas a impuestos."
@@ -94,7 +94,7 @@ class EntradaForm(forms.ModelForm):
 
         fecha = self.cleaned_data["fecha"]
 
-        if fecha > timezone.now().date():
+        if fecha > timezone.localdate():
 
             raise forms.ValidationError(
                 "La fecha no puede ser mayor a la fecha actual."
