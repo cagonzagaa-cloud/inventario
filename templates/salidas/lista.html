@@ -231,9 +231,10 @@ Salidas
 
     </button>
     {% elif salida.estado == "CONFIRMADA" %}
-    <form method="post" action="{% url 'anular_salida' salida.id %}" class="d-inline" onsubmit="return confirm('¿Anular esta salida y revertir su stock?');">{% csrf_token %}
-        <button class="btn btn-outline-danger btn-sm" title="Anular salida"><i class="bi bi-x-circle"></i></button>
-    </form>
+    <button type="button" class="btn btn-outline-danger btn-sm btnAnularMovimiento"
+        data-url="{% url 'anular_salida' salida.id %}" data-codigo="{{ salida.codigo }}"
+        data-tipo="salida" data-bs-toggle="modal" data-bs-target="#modalAnularMovimiento"
+        title="Anular salida"><i class="bi bi-x-circle"></i></button>
     {% endif %}
 
 
@@ -284,5 +285,6 @@ Salidas
 {% include "salidas/modal_editar_salida.html" %}
 
 {% include "salidas/modal_eliminar_salida.html" %}
+{% include "includes/modal_anular_movimiento.html" %}
 
 {% endblock %}

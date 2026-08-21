@@ -170,6 +170,13 @@ else:
 if DATABASES['default']['ENGINE'] != 'django.db.backends.sqlite3' and not DATABASES['default'].get('PASSWORD'):
     raise ValueError('DATABASE_PASSWORD environment variable is required for Supabase connection.')
 
+# Supabase usa PgBouncer en modo transaction pooling en el puerto 6543. Los
+# cursores con nombre de PostgreSQL pueden desaparecer al cambiar la conexión
+# entre transacciones, por lo que Django debe consumir cada consulta sin
+# cursores persistentes del servidor.
+if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

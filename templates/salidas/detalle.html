@@ -1,429 +1,80 @@
-{% extends 'layouts/base.html' %}
-
-
-{% block title %}
-Detalle de Salida
-{% endblock %}
-
-
-
+{% extends "layouts/base.html" %}
+{% load moneda %}
+{% block title %}Detalle de Salida{% endblock %}
 {% block content %}
-
-
 <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold"><i class="bi bi-box-arrow-up"></i> {{ salida.codigo }}</h3>
+        <small class="text-muted">Detalle de la Salida de Inventario</small>
+    </div>
+    <a href="{% url 'lista_salidas' %}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Regresar</a>
+</div>
 
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-header bg-primary text-white"><strong>Información General</strong></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4"><label class="fw-bold">Cliente</label><p>{{ salida.cliente.nombre_completo }}</p></div>
+            <div class="col-md-4"><label class="fw-bold">Fecha</label><p>{{ salida.fecha }}</p></div>
+            <div class="col-md-4"><label class="fw-bold">Documento</label><p>{{ salida.numero_documento|default:"-" }}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4"><label class="fw-bold">Tipo</label><p>{{ salida.get_tipo_display }}</p></div>
+            <div class="col-md-4">
+                <label class="fw-bold">Estado</label>
+                <p>{% if salida.estado == 'BORRADOR' %}<span class="badge bg-warning text-dark">Borrador</span>{% elif salida.estado == 'CONFIRMADA' %}<span class="badge bg-success">Confirmada</span>{% else %}<span class="badge bg-danger">Anulada</span>{% endif %}</p>
+            </div>
+            <div class="col-md-4"><label class="fw-bold">Usuario</label><p>{{ salida.usuario.username }}</p></div>
+        </div>
+    </div>
+</div>
 
-    <h3 class="fw-bold">
-
-        <i class="bi bi-box-arrow-up"></i>
-
-        Detalle de Salida
-
-    </h3>
-
-
-
-    <a href="{% url 'lista_salidas' %}"
-    class="btn btn-secondary">
-
-
-        <i class="bi bi-arrow-left"></i>
-
-        Regresar
-
-
-                        <td>
-                            {% load moneda %}
-                            {{ detalle.precio|currency }}
-                        </td>
-
-                        <td>
-                            {% if detalle.tarifa is not None %}
-                                {{ detalle.tarifa|floatformat:0 }}%
-                            {% else %}
-                                -
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list-check"></i> Detalle de la Salida</h5>
+        <div class="d-flex gap-2">
+            {% if salida.estado == 'BORRADOR' %}
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDetalleSalida"><i class="bi bi-plus-circle"></i> Agregar Producto</button>
+            <form method="POST" action="{% url 'confirmar_salida' salida.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success" onclick="return confirm('¿Está seguro de confirmar esta salida?');"><i class="bi bi-check-circle"></i> Confirmar Salida</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="tablaDetalleSalida">
+                <thead class="table-light"><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Tarifa IVA</th><th>Subtotal</th><th width="150">Acciones</th></tr></thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td><td>{{ detalle.cantidad }}</td><td>{{ detalle.precio|currency }}</td>
+                        <td>{% if detalle.tarifa is not None %}{{ detalle.tarifa|floatformat:0 }}%{% else %}-{% endif %}</td>
+                        <td>{{ detalle.subtotal|currency }}</td>
+                        <td class="text-center">
+                            {% if salida.estado == 'BORRADOR' %}
+                            <button type="button" class="btn btn-outline-danger btn-sm rounded-circle btnEliminarDetalle" data-id="{{ detalle.id }}" data-producto="{{ detalle.producto.codigo }} - {{ detalle.producto.nombre }}" data-bs-toggle="modal" data-bs-target="#modalEliminarDetalle" title="Eliminar detalle"><i class="bi bi-trash-fill"></i></button>
                             {% endif %}
                         </td>
-
-                        <td>
-                            {{ detalle.subtotal|currency }}
-                        </td>
-
-
-<!-- ============================= -->
-<!-- INFORMACIÓN DE LA SALIDA -->
-<!-- ============================= -->
-
-
-<div class="card shadow-sm mb-4">
-
-
-    <div class="card-header bg-primary text-white">
-
-
-        <h5 class="mb-0">
-
-            Información de la salida
-
-        </h5>
-
-
-    </div>
-
-
-
-    <div class="card-body">
-
-
-        <div class="row">
-
-
-            <div class="col-md-3">
-
-                <label class="fw-bold">
-                    Código
-                </label>
-
-                <p>
-                    {{ salida.codigo }}
-                </p>
-
-            </div>
-
-
-
-
-            <div class="col-md-3">
-
-                <label class="fw-bold">
-                    Cliente
-                </label>
-
-                <p>
-                    {{ salida.cliente.nombre_completo }}
-                </p>
-
-            </div>
-
-
-
-
-            <div class="col-md-2">
-
-                <label class="fw-bold">
-                    Fecha
-                </label>
-
-                <p>
-                    {{ salida.fecha }}
-                </p>
-
-            </div>
-
-
-
-
-            <div class="col-md-2">
-
-                <label class="fw-bold">
-                    Tipo
-                </label>
-
-                <p>
-                    {{ salida.get_tipo_display }}
-                </p>
-
-            </div>
-
-
-
-
-            <div class="col-md-2">
-
-                <label class="fw-bold">
-                    Estado
-                </label>
-
-
-                {% if salida.estado == "CONFIRMADA" %}
-
-                    <span class="badge bg-success">
-                        Confirmada
-                    </span>
-
-
-                {% elif salida.estado == "ANULADA" %}
-
-                    <span class="badge bg-danger">
-                        Anulada
-                    </span>
-
-
-                {% else %}
-
-                    <span class="badge bg-warning text-dark">
-                        Borrador
-                    </span>
-
-
-                {% endif %}
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</div>
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- BOTÓN AGREGAR PRODUCTO -->
-<!-- ============================= -->
-
-
-<div class="card shadow-sm mb-4">
-
-
-    <div class="card-body">
-
-        {% if salida.estado == 'BORRADOR' %}
-        <button
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modalDetalleSalida">
-
-
-            <i class="bi bi-plus-circle"></i>
-
-            Agregar Producto
-
-
-        </button>
-
-        <form method="POST" action="{% url 'confirmar_salida' salida.id %}" class="d-inline ms-2">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success" onclick="return confirm('¿Está seguro de confirmar esta salida?');">
-                <i class="bi bi-check-circle"></i> Confirmar salida
-            </button>
-        </form>
-        {% endif %}
-
-
-    </div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- ============================= -->
-<!-- PRODUCTOS AGREGADOS -->
-<!-- ============================= -->
-
-
-<div class="card shadow-sm">
-
-
-    <div class="card-header">
-
-
-        <h5 class="mb-0">
-
-            Productos agregados
-
-        </h5>
-
-
-    </div>
-
-
-
-
-    <div class="card-body">
-
-
-        <div class="table-responsive">
-
-
-            <table class="table table-hover">
-
-
-                <thead class="table-light">
-
-
-                    <tr>
-
-                        <th>#</th>
-
-                        <th>Producto</th>
-
-                        <th>Cantidad</th>
-
-                        <th>Precio</th>
-
-                        <th>Tarifa IVA</th>
-
-                        <th>Subtotal</th>
-
-                        <th>
-                            Acción
-                        </th>
-
-
                     </tr>
-
-
-                </thead>
-
-
-
-
-                <tbody>
-
-
-                    {% for detalle in detalles %}
-
-
-                    <tr>
-
-
-                        <td>
-                            {{ forloop.counter }}
-                        </td>
-
-
-
-                        <td>
-                            {{ detalle.producto.nombre }}
-                        </td>
-
-
-
-                        <td>
-                            {{ detalle.cantidad }}
-                        </td>
-
-
-
-                        <td>
-                            {{ detalle.precio|currency }}
-                        </td>
-
-
-
-                        <td>
-                            {{ detalle.subtotal|currency }}
-                        </td>
-
-
-
-
-                        <td>
-
-
-                        <button
-                            type="button"
-                            class="btn btn-danger btn-sm btnEliminarDetalle"
-
-                            data-id="{{ detalle.id }}"
-
-                            data-producto="{{ detalle.producto.codigo }} - {{ detalle.producto.nombre }}"
-
-                            data-bs-toggle="modal"
-
-                            data-bs-target="#modalEliminarDetalle">
-
-                            <i class="bi bi-trash"></i>
-
-                        </button>
-
-
-                        </td>
-
-
-
-                    </tr>
-
-
-
-                    {% empty %}
-
-
-
-                    <tr>
-
-                        <td colspan="6"
-                            class="text-center">
-
-
-                            No existen productos agregados.
-
-
-                        </td>
-
-
-                    </tr>
-
-
-
-                    {% endfor %}
-
-
-
+                    {% empty %}<tr><td colspan="6" class="text-center text-muted">No existen productos registrados.</td></tr>{% endfor %}
                 </tbody>
-
-
             </table>
-
-
-        </div>
-
-
-    </div>
-
-
-
-
-    <div class="card-footer">
-        <div class="row g-3 justify-content-end">
-            <div class="col-md-4">
-                <div class="d-flex justify-content-between">
-                    <span>Base imponible</span>
-                    <strong>{{ salida.total_base|currency }}</strong>
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <span>IVA</span>
-                    <strong>{{ salida.total_iva|currency }}</strong>
-                </div>
-            </div>
-            <div class="col-md-4 text-end">
-                <h4>
-                    Total:
-                    <span class="text-success">{{ salida.total_con_iva|currency }}</span>
-                </h4>
-            </div>
         </div>
     </div>
+</div>
 
-
-
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body"><div class="row g-3 justify-content-end">
+        <div class="col-md-4">
+            <div class="d-flex justify-content-between"><span>Base imponible</span><strong>{{ salida.total_base|currency }}</strong></div>
+            <div class="d-flex justify-content-between mt-2"><span>IVA</span><strong>{{ salida.total_iva|currency }}</strong></div>
+        </div>
+        <div class="col-md-4 text-end"><h4>Total: <strong>{{ salida.total_con_iva|currency }}</strong></h4></div>
+    </div></div>
 </div>
 
 {% include "salidas/modal_detalle.html" %}
-
 {% include "salidas/modal_eliminar_detalle.html" %}
-
 {% endblock %}

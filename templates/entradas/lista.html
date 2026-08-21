@@ -232,9 +232,10 @@ Entradas
                                 <i class="bi bi-trash"></i>
                             </button>
                             {% elif entrada.estado == "CONFIRMADA" %}
-                            <form method="post" action="{% url 'anular_entrada' entrada.id %}" class="d-inline" onsubmit="return confirm('¿Anular esta entrada y revertir su stock?');">{% csrf_token %}
-                                <button class="btn btn-outline-danger btn-sm" title="Anular entrada"><i class="bi bi-x-circle"></i></button>
-                            </form>
+                            <button type="button" class="btn btn-outline-danger btn-sm btnAnularMovimiento"
+                                data-url="{% url 'anular_entrada' entrada.id %}" data-codigo="{{ entrada.codigo }}"
+                                data-tipo="entrada" data-bs-toggle="modal" data-bs-target="#modalAnularMovimiento"
+                                title="Anular entrada"><i class="bi bi-x-circle"></i></button>
                             {% endif %}
 
                         </td>
@@ -288,6 +289,7 @@ Entradas
 <!-- MODAL CREAR ENTRADA -->
 
 {% include "entradas/formulario_unico.html" %}
+{% include "includes/modal_anular_movimiento.html" %}
 
 
 
