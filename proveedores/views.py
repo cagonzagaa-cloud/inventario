@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 
 from .models import Proveedor
 from .forms import ProveedorForm
@@ -91,7 +92,17 @@ def eliminar_proveedor(request, pk):
         pk=pk
     )
 
-    proveedor.delete()
+    if request.method != "POST":
+        messages.warning(request, "Confirme la eliminación del proveedor desde el listado.")
+        return redirect("lista_proveedores")
+
+    try:
+        proveedor.delete()
+    except ProtectedError:
+        proveedor.estado = False
+        proveedor.save(update_fields=["estado"])
+        messages.warning(request, "El proveedor tiene movimientos asociados y fue desactivado para conservar su historial.")
+        return redirect("lista_proveedores")
 
     messages.success(
         request,

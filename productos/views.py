@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 
 from reportes.utils import registrar_movimiento
 
@@ -126,11 +127,21 @@ def eliminar_producto(request, pk):
         pk=pk
     )
 
-    producto.delete()
+    if request.method != "POST":
+        messages.warning(request, "Confirme la eliminación del producto desde el listado.")
+        return redirect("lista_productos")
+
+    try:
+        producto.delete()
+    except ProtectedError:
+        producto.estado = False
+        producto.save(update_fields=["estado"])
+        messages.warning(request, "El producto tiene movimientos asociados y fue desactivado para conservar su historial.")
+        return redirect("lista_productos")
 
     messages.success(
         request,
-        "Producto eliminado."
+        "Producto eliminado correctamente."
     )
 
     return redirect("lista_productos")

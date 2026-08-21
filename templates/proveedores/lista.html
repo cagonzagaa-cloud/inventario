@@ -96,7 +96,11 @@ Proveedores
                             data-action="{% url 'editar_proveedor' proveedor.pk %}">
                             Editar
                         </button>
-                        <a href="{% url 'eliminar_proveedor' proveedor.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                        <form method="post" action="{% url 'eliminar_proveedor' proveedor.pk %}" class="d-inline"
+                            onsubmit="return confirm('¿Desea eliminar este proveedor? Si tiene movimientos, se desactivará para conservar su historial.');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

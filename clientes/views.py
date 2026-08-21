@@ -96,11 +96,16 @@ def eliminar_cliente(request, pk):
         pk=pk
     )
 
-    cliente.delete()
+    if request.method != "POST":
+        messages.warning(request, "Confirme la desactivación del cliente desde el listado.")
+        return redirect("lista_clientes")
+
+    cliente.estado = False
+    cliente.save(update_fields=["estado"])
 
     messages.success(
         request,
-        "Cliente eliminado correctamente."
+        "Cliente desactivado correctamente; su historial se conserva."
     )
 
     return redirect("lista_clientes")

@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models.deletion import ProtectedError
 
 from .models import Categoria
 from .forms import CategoriaForm
@@ -67,7 +68,15 @@ def eliminar_categoria(request, pk):
 
     categoria = get_object_or_404(Categoria, pk=pk)
 
-    categoria.delete()
+    if request.method != "POST":
+        messages.warning(request, "Confirme la eliminación de la categoría desde el listado.")
+        return redirect("lista_categorias")
+
+    try:
+        categoria.delete()
+    except ProtectedError:
+        messages.error(request, "No se puede eliminar la categoría porque tiene productos asociados.")
+        return redirect("lista_categorias")
 
     messages.success(request, "Categoría eliminada correctamente.")
 
