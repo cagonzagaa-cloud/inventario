@@ -25,6 +25,18 @@ Productos
 
     </div>
 
+    <form method="get" class="modern-card p-3 mb-4" role="search">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+            <input type="search" name="q" value="{{ busqueda }}" class="form-control"
+                placeholder="Buscar por código, código de barras, lote o nombre"
+                aria-label="Buscar producto" autofocus>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
+            {% if busqueda %}<a href="{% url 'lista_productos' %}" class="btn btn-outline-secondary">Limpiar</a>{% endif %}
+        </div>
+        {% if busqueda %}<small class="text-muted d-block mt-2">Resultados para: <strong>{{ busqueda }}</strong></small>{% endif %}
+    </form>
+
     {# Product form must appear before the table for tests #}
     <div id="productoFormPanel" class="page-form mt-4">
         <div class="form-header d-flex justify-content-between align-items-center">
@@ -106,6 +118,8 @@ Productos
                         </form>
                     </td>
                 </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted py-4">No se encontraron productos con ese código o lote.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

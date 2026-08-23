@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
+from django.db.models import Q
 
 from reportes.utils import registrar_movimiento
 
@@ -17,6 +18,15 @@ def lista_productos(request):
         "clasificacion_tributaria"
     ).order_by("-id")
 
+    busqueda = request.GET.get("q", "").strip()
+    if busqueda:
+        productos = productos.filter(
+            Q(codigo__icontains=busqueda)
+            | Q(codigo_barras__icontains=busqueda)
+            | Q(lote__icontains=busqueda)
+            | Q(nombre__icontains=busqueda)
+        )
+
     form = ProductoForm()
 
     return render(
@@ -24,7 +34,8 @@ def lista_productos(request):
         "productos/lista.html",
         {
             "productos": productos,
-            "form": form
+            "form": form,
+            "busqueda": busqueda,
         }
     )
 

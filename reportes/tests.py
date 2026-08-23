@@ -15,7 +15,8 @@ class ExportarKardexExcelTest(TestCase):
         self.usuario = get_user_model().objects.create_user(username="reporte", password="clave-segura")
         categoria = Categoria.objects.create(nombre="Reporte", descripcion="Prueba")
         self.producto = Producto.objects.create(
-            codigo="REP-001", nombre="Producto reporte", categoria=categoria,
+            codigo="REP-001", codigo_barras="7891234567890", lote="LOTE-REP-01",
+            ubicacion="Bodega B / Estante 3", nombre="Producto reporte", categoria=categoria,
             costo=10, precio=15, stock=8, stock_minimo=1,
         )
         MovimientoInventario.objects.create(
@@ -35,5 +36,8 @@ class ExportarKardexExcelTest(TestCase):
         libro = load_workbook(BytesIO(respuesta.content))
         hoja = libro["Kardex"]
         self.assertEqual(hoja["C2"].value, "REP-001")
-        self.assertEqual(hoja["E2"].value, "Entrada")
-        self.assertEqual(hoja["I2"].value, "ENT-TEST")
+        self.assertEqual(hoja["D2"].value, "7891234567890")
+        self.assertEqual(hoja["E2"].value, "LOTE-REP-01")
+        self.assertEqual(hoja["F2"].value, "Bodega B / Estante 3")
+        self.assertEqual(hoja["H2"].value, "Entrada")
+        self.assertEqual(hoja["L2"].value, "ENT-TEST")

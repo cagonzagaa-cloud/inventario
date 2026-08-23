@@ -45,7 +45,8 @@ def exportar_kardex_excel(request):
     hoja = libro.active
     hoja.title = "Kardex"
     encabezados = [
-        "N°", "Fecha", "Código producto", "Producto", "Movimiento",
+        "N°", "Fecha", "Código producto", "Código de barras", "Lote",
+        "Ubicación", "Producto", "Movimiento",
         "Cantidad", "Stock anterior", "Stock nuevo", "Referencia", "Usuario",
     ]
     hoja.append(encabezados)
@@ -58,7 +59,9 @@ def exportar_kardex_excel(request):
     for numero, movimiento in enumerate(movimientos, start=1):
         fecha = timezone.localtime(movimiento.fecha).replace(tzinfo=None)
         hoja.append([
-            numero, fecha, movimiento.producto.codigo, movimiento.producto.nombre,
+            numero, fecha, movimiento.producto.codigo,
+            movimiento.producto.codigo_barras or "", movimiento.producto.lote or "",
+            movimiento.producto.ubicacion or "", movimiento.producto.nombre,
             movimiento.get_tipo_display(), movimiento.cantidad,
             movimiento.stock_anterior, movimiento.stock_nuevo,
             movimiento.referencia or "", movimiento.usuario.username,
@@ -67,7 +70,7 @@ def exportar_kardex_excel(request):
 
     hoja.freeze_panes = "A2"
     hoja.auto_filter.ref = hoja.dimensions
-    anchos = [8, 20, 20, 34, 16, 12, 16, 14, 22, 22]
+    anchos = [8, 20, 20, 22, 18, 28, 34, 16, 12, 16, 14, 22, 22]
     for indice, ancho in enumerate(anchos, start=1):
         hoja.column_dimensions[get_column_letter(indice)].width = ancho
 
@@ -98,6 +101,10 @@ def api_ultimos_movimientos(request):
             'id': m.pk,
             'producto': m.producto.nombre,
             'producto_id': m.producto.pk,
+            'codigo': m.producto.codigo,
+            'codigo_barras': m.producto.codigo_barras,
+            'lote': m.producto.lote,
+            'ubicacion': m.producto.ubicacion,
             'tipo': m.tipo,
             'cantidad': m.cantidad,
             'fecha': fecha_local.strftime('%d/%m/%Y %H:%M'),

@@ -97,3 +97,21 @@ class ProductoStockMinimoTest(TestCase):
         form_index = response.content.decode("utf-8").index("id=\"formProducto\"")
         table_index = response.content.decode("utf-8").index("id=\"tablaProductos\"")
         self.assertLess(form_index, table_index)
+
+    def test_buscar_producto_por_codigo_de_barras_o_lote(self):
+        categoria = Categoria.objects.create(nombre="Búsqueda", descripcion="Test")
+        producto = Producto.objects.create(
+            codigo="BUS-001", codigo_barras="9988776655", lote="LOTE-BUSCADO",
+            ubicacion="Estante Z", nombre="Producto encontrable", categoria=categoria,
+        )
+        otro = Producto.objects.create(codigo="BUS-002", nombre="Producto diferente", categoria=categoria)
+        usuario = get_user_model().objects.create_user(username="buscador", password="12345678")
+        self.client.force_login(usuario)
+
+        por_barra = self.client.get(reverse("lista_productos"), {"q": "9988776655"})
+        self.assertContains(por_barra, producto.nombre)
+        self.assertNotContains(por_barra, otro.nombre)
+
+        por_lote = self.client.get(reverse("lista_productos"), {"q": "lote-buscado"})
+        self.assertContains(por_lote, producto.nombre)
+        self.assertContains(por_lote, "Estante Z")

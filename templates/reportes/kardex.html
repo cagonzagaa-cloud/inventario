@@ -52,6 +52,14 @@ class="table table-hover align-middle">
 
 <th>Producto</th>
 
+<th>Código</th>
+
+<th>Código de barras</th>
+
+<th>Lote</th>
+
+<th>Ubicación</th>
+
 <th>Movimiento</th>
 
 <th>Cantidad</th>
@@ -94,6 +102,14 @@ class="table table-hover align-middle">
 <td>
 {{ movimiento.producto.nombre }}
 </td>
+
+<td>{{ movimiento.producto.codigo }}</td>
+
+<td>{{ movimiento.producto.codigo_barras|default:"-" }}</td>
+
+<td>{{ movimiento.producto.lote|default:"-" }}</td>
+
+<td>{{ movimiento.producto.ubicacion|default:"-" }}</td>
 
 
 <td>
@@ -156,7 +172,7 @@ Salida
 
 <tr>
 
-<td colspan="8"
+<td colspan="12"
 class="text-center">
 
 
