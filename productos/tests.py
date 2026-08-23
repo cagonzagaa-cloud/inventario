@@ -10,6 +10,20 @@ from reportes.models import MovimientoInventario
 from productos.forms import ProductoForm
 
 
+class AccesoProductosTest(TestCase):
+    def test_usuario_no_autenticado_es_redirigido_al_login_con_mensaje(self):
+        response = self.client.get(reverse("lista_productos"), follow=True)
+
+        self.assertRedirects(
+            response,
+            f'{reverse("login")}?next={reverse("lista_productos")}',
+        )
+        self.assertContains(
+            response,
+            "Debe iniciar sesión primero para acceder a esta página.",
+        )
+
+
 class ProductoStockMinimoTest(TestCase):
 
     def test_producto_admite_ubicacion_codigo_de_barras_y_lote(self):
