@@ -59,7 +59,10 @@ Productos
             <thead>
                 <tr>
                     <th>Código</th>
+                    <th>Código de barras</th>
                     <th>Producto</th>
+                    <th>Ubicación</th>
+                    <th>Lote</th>
                     <th>Categoría</th>
                     <th>Clasificación tributaria</th>
                     <th>Stock</th>
@@ -70,7 +73,10 @@ Productos
                 {% for producto in productos %}
                 <tr>
                     <td>{{ producto.codigo }}</td>
+                    <td>{{ producto.codigo_barras|default:"-" }}</td>
                     <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.ubicacion|default:"-" }}</td>
+                    <td>{{ producto.lote|default:"-" }}</td>
                     <td>{{ producto.categoria.nombre }}</td>
                     <td>{% if producto.clasificacion_tributaria %}{{ producto.clasificacion_tributaria }}{% else %}<span class="text-muted">Tarifa general</span>{% endif %}</td>
                     <td>{{ producto.stock }}</td>
@@ -78,6 +84,9 @@ Productos
                         <button type="button" class="btn btn-sm btn-outline-primary btnEditarProducto"
                             data-id="{{ producto.pk }}"
                             data-codigo="{{ producto.codigo }}"
+                            data-codigo-barras="{{ producto.codigo_barras|default_if_none:'' }}"
+                            data-lote="{{ producto.lote }}"
+                            data-ubicacion="{{ producto.ubicacion }}"
                             data-nombre="{{ producto.nombre }}"
                             data-descripcion="{{ producto.descripcion|default_if_none:'' }}"
                             data-categoria="{{ producto.categoria.pk }}"

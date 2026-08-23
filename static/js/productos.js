@@ -35,6 +35,9 @@ $(function () {
         const $btn = $(this);
         const action = $btn.data('action');
         $('#id_codigo').val($btn.attr('data-codigo'));
+        $('#id_codigo_barras').val($btn.attr('data-codigo-barras'));
+        $('#id_lote').val($btn.attr('data-lote'));
+        $('#id_ubicacion').val($btn.attr('data-ubicacion'));
         $('#id_nombre').val($btn.attr('data-nombre'));
         $('#id_descripcion').val($btn.attr('data-descripcion'));
         $('#id_categoria').val($btn.attr('data-categoria'));

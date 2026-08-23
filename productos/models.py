@@ -18,6 +18,30 @@ class Producto(models.Model):
         verbose_name="Código"
     )
 
+    codigo_barras = models.CharField(
+        "Código de barras",
+        max_length=80,
+        unique=True,
+        blank=True,
+        null=True,
+        help_text="EAN, UPC u otro código legible por escáner."
+    )
+
+    lote = models.CharField(
+        "Lote",
+        max_length=80,
+        blank=True,
+        default=""
+    )
+
+    ubicacion = models.CharField(
+        "Ubicación",
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="Ejemplo: Bodega A, pasillo 2, estante 4."
+    )
+
     nombre = models.CharField(
         max_length=150,
         verbose_name="Nombre"

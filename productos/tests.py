@@ -7,9 +7,39 @@ from django.urls import reverse
 from categorias.models import Categoria
 from productos.models import Producto
 from reportes.models import MovimientoInventario
+from productos.forms import ProductoForm
 
 
 class ProductoStockMinimoTest(TestCase):
+
+    def test_producto_admite_ubicacion_codigo_de_barras_y_lote(self):
+        categoria = Categoria.objects.create(nombre="Almacén", descripcion="Test")
+        producto = Producto.objects.create(
+            codigo="P-UBI-1",
+            codigo_barras="7501234567890",
+            lote="LOTE-2026-001",
+            ubicacion="Bodega A / Pasillo 2",
+            nombre="Producto ubicado",
+            categoria=categoria,
+        )
+
+        self.assertEqual(producto.codigo_barras, "7501234567890")
+        self.assertEqual(producto.lote, "LOTE-2026-001")
+        self.assertEqual(producto.ubicacion, "Bodega A / Pasillo 2")
+
+    def test_codigo_de_barras_no_se_repite(self):
+        categoria = Categoria.objects.create(nombre="Códigos", descripcion="Test")
+        Producto.objects.create(
+            codigo="P-COD-1", codigo_barras="123456789", nombre="Primero", categoria=categoria
+        )
+        form = ProductoForm(data={
+            "codigo": "P-COD-2", "codigo_barras": "123456789", "nombre": "Segundo",
+            "categoria": categoria.pk, "clasificacion_tributaria": "", "costo": "0",
+            "precio": "0", "stock": "0", "stock_minimo": "0", "estado": "on",
+        })
+
+        self.assertFalse(form.is_valid())
+        self.assertIn("codigo_barras", form.errors)
 
     def test_producto_esta_bajo_stock_cuando_stock_es_igual_o_inferior_al_minimo(self):
         categoria = Categoria.objects.create(nombre="Electrónica", descripcion="Test")

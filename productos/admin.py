@@ -9,6 +9,8 @@ class ProductoAdmin(admin.ModelAdmin):
 
         "codigo",
 
+        "codigo_barras",
+
         "nombre",
 
         "categoria",
@@ -20,6 +22,10 @@ class ProductoAdmin(admin.ModelAdmin):
         "precio",
 
         "stock",
+
+        "ubicacion",
+
+        "lote",
 
         "estado",
 
@@ -38,6 +44,12 @@ class ProductoAdmin(admin.ModelAdmin):
     search_fields = (
 
         "codigo",
+
+        "codigo_barras",
+
+        "lote",
+
+        "ubicacion",
 
         "nombre",
 

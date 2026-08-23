@@ -28,6 +28,7 @@ django.setup()
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import Q
 
 
 # ============================================================
@@ -512,6 +513,9 @@ async def mostrar_productos(query):
 
             f"🔹 *{producto.nombre}*\n"
             f"   Código: `{producto.codigo}`\n"
+            f"   Código de barras: `{producto.codigo_barras or '-'}`\n"
+            f"   Lote: {producto.lote or '-'}\n"
+            f"   Ubicación: {producto.ubicacion or '-'}\n"
             f"   Precio: ${producto.precio}\n"
             f"   Stock: {producto.stock}\n\n"
 
@@ -668,7 +672,7 @@ async def iniciar_busqueda(
     await query.edit_message_text(
 
         "🔎 *BUSCAR PRODUCTO*\n\n"
-        "Escribe el nombre o código del producto.\n\n"
+        "Escribe el nombre, código, código de barras, lote o ubicación.\n\n"
         "También puedes pulsar el botón para volver al menú.",
 
         parse_mode="Markdown",
@@ -682,24 +686,15 @@ def buscar_productos(texto):
 
     productos = list(
 
-        Producto.objects.filter(
-            estado=True,
-            nombre__icontains=texto
+        Producto.objects.filter(estado=True).filter(
+            Q(nombre__icontains=texto)
+            | Q(codigo__icontains=texto)
+            | Q(codigo_barras__icontains=texto)
+            | Q(lote__icontains=texto)
+            | Q(ubicacion__icontains=texto)
         ).order_by("nombre")[:MAX_PRODUCTOS]
 
     )
-
-
-    if not productos:
-
-        productos = list(
-
-            Producto.objects.filter(
-                estado=True,
-                codigo__icontains=texto
-            ).order_by("nombre")[:MAX_PRODUCTOS]
-
-        )
 
 
     return productos
@@ -759,6 +754,9 @@ async def procesar_busqueda(
 
             f"🔹 *{producto.nombre}*\n"
             f"   Código: `{producto.codigo}`\n"
+            f"   Código de barras: `{producto.codigo_barras or '-'}`\n"
+            f"   Lote: {producto.lote or '-'}\n"
+            f"   Ubicación: {producto.ubicacion or '-'}\n"
             f"   Precio: ${producto.precio}\n"
             f"   Stock: {producto.stock}\n"
             f"   {estado}\n\n"

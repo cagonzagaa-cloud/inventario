@@ -18,6 +18,29 @@ class ProductoForm(forms.ModelForm):
                 }
             ),
 
+            "codigo_barras": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Ej: 7501234567890",
+                    "autocomplete": "off"
+                }
+            ),
+
+            "lote": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Ej: LOTE-2026-001",
+                    "autocomplete": "off"
+                }
+            ),
+
+            "ubicacion": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Ej: Bodega A / Pasillo 2 / Estante 4"
+                }
+            ),
+
             "nombre": forms.TextInput(
                 attrs={
                     "class": "form-control",
@@ -85,6 +108,16 @@ class ProductoForm(forms.ModelForm):
             )
 
         }
+
+    def clean_codigo_barras(self):
+        codigo = self.cleaned_data.get("codigo_barras")
+        return codigo.strip() if codigo else None
+
+    def clean_lote(self):
+        return (self.cleaned_data.get("lote") or "").strip().upper()
+
+    def clean_ubicacion(self):
+        return (self.cleaned_data.get("ubicacion") or "").strip()
 
     def clean_costo(self):
 
