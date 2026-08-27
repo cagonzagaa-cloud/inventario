@@ -59,7 +59,7 @@ class Salida(models.Model):
     )
 
 
-    fecha = models.DateField()
+    fecha = models.DateField(default=timezone.localdate)
 
 
 

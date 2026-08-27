@@ -28,6 +28,7 @@ class SalidaForm(forms.ModelForm):
         widgets = {
 
             "fecha": forms.DateInput(
+                format="%Y-%m-%d",
                 attrs={
                     "class": "form-control",
                     "type": "date",
@@ -85,6 +86,9 @@ class SalidaForm(forms.ModelForm):
 
             self.fields["fecha"].initial = timezone.localdate()
 
+        self.fields["fecha"].disabled = True
+        self.fields["fecha"].help_text = "La fecha se asigna automáticamente y no puede modificarse."
+
         self.fields["operacion_tributaria"].label = "Aplicar impuestos (IVA)"
         self.fields["actividad_tributaria"].label = "Actividad tributaria"
         self.fields["tiene_registro_turismo"].label = "Cuenta con registro de turismo"
@@ -101,19 +105,6 @@ class SalidaForm(forms.ModelForm):
             documento = documento.strip().upper()
 
         return documento
-
-    def clean_fecha(self):
-
-        fecha = self.cleaned_data["fecha"]
-
-        if fecha > timezone.localdate():
-
-            raise forms.ValidationError(
-                "La fecha no puede ser mayor a la fecha actual."
-            )
-
-        return fecha
-
 
 class DetalleSalidaForm(forms.ModelForm):
 
@@ -192,7 +183,7 @@ DetalleSalidaFormSet = inlineformset_factory(
     Salida,
     DetalleSalida,
     form=DetalleSalidaForm,
-    extra=1,
+    extra=0,
     can_delete=True,
     min_num=1,
     validate_min=True,

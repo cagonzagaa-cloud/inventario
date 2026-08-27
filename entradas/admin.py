@@ -48,6 +48,7 @@ class EntradaAdmin(admin.ModelAdmin):
 
     readonly_fields = (
         "codigo",
+        "fecha",
         "total",
         "fecha_creacion",
     )

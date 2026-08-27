@@ -49,7 +49,8 @@ class Entrada(models.Model):
     )
 
     fecha = models.DateField(
-        verbose_name="Fecha de Entrada"
+        verbose_name="Fecha de Entrada",
+        default=timezone.localdate,
     )
 
     tipo = models.CharField(

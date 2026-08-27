@@ -57,6 +57,8 @@ class SalidaAdmin(admin.ModelAdmin):
 
         "codigo",
 
+        "fecha",
+
         "total",
 
         "fecha_creacion",

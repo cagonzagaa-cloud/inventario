@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from categorias.models import Categoria
 from clientes.models import Cliente
@@ -90,6 +91,30 @@ class DetalleSalidaTipoConversionTest(TestCase):
         self.assertEqual(nueva.estado, "CONFIRMADA")
         self.producto.refresh_from_db()
         self.assertEqual(self.producto.stock, 7)
+
+    def test_fecha_enviada_por_el_usuario_se_ignora(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("crear_salida"), {
+            "fecha": "2020-01-01", "cliente": self.cliente.pk,
+            "tipo": "VENTA", "operacion_tributaria": "on",
+            "detalles-TOTAL_FORMS": "1", "detalles-INITIAL_FORMS": "0",
+            "detalles-MIN_NUM_FORMS": "1", "detalles-MAX_NUM_FORMS": "1000",
+            "detalles-0-producto": self.producto.pk,
+            "detalles-0-cantidad": "1", "detalles-0-precio": "12.50",
+        })
+
+        self.assertEqual(response.status_code, 302)
+        nueva = Salida.objects.exclude(pk=self.salida.pk).get()
+        self.assertEqual(nueva.fecha, timezone.localdate())
+
+    def test_formulario_inicia_con_una_fila_y_permite_agregar_mas(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("lista_salidas"))
+
+        self.assertContains(response, 'name="detalles-TOTAL_FORMS" value="1"')
+        self.assertContains(response, 'id="agregarFilaSalida"')
+        self.assertContains(response, 'id="id_fecha"')
+        self.assertContains(response, "required disabled")
 
     def test_eliminar_salida_confirmada_no_genera_error_500(self):
         Salida.objects.filter(pk=self.salida.pk).update(estado="CONFIRMADA")
